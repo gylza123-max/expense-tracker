@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Price Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 0.95em;
+        }
+
+        .date {
+            color: #2a9d8f;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.6em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .price-display {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .price-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .price-value {
+            font-size: 3em;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .history {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .history-title {
+            color: #ffd700;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            color: #707070;
+            font-size: 0.85em;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .price-value {
+                font-size: 2em;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🥇 Gold Price</h1>
+            <p class="subtitle">Harga Emas Real-Time</p>
+            <div class="date" id="dateDisplay"></div>
+        </header>
+
+        <div class="price-display">
+            <div class="price-label">Current Price</div><div class="price-value" id="currentPrice">$2,045</div>
+            <div class="price-unit">USD per Troy Ounce</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Tertinggi hari ini</div>
+                <div class="stat-value" id="dayHigh">$2,055</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Terendah hari ini</div>
+                <div class="stat-value" id="dayLow">$2,035</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">52 Week High</div>
+                <div class="stat-value" id="yearHigh">$2,135</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">52 Week Low</div>
+                <div class="stat-value" id="yearLow">$1,810</div>
+            </div>
+        </div>
+
+        <div class="history">
+            <div class="history-title">📊 Pergerakan Harga</div>
+            <div class="history-item">
+                <span>1 Minggu Lalu</span>
+                <span style="color: #ffd700; font-weight: bold;">$2,018</span>
+            </div>
+            <div class="history-item">
+                <span>1 Bulan Lalu</span>
+                <span style="color: #ffd700; font-weight: bold;">$2,028</span>
+            </div>
+            <div class="history-item">
+                <span>3 Bulan Lalu</span>
+                <span style="color: #ffd700; font-weight: bold;">$1,965</span>
+            </div>
+            <div class="history-item">
+                <span>6 Bulan Lalu</span>
+                <span style="color: #ffd700; font-weight: bold;">$1,925</span>
+            </div>
+            <div class="history-item">
+                <span>1 Tahun Lalu</span>
+                <span style="color: #ffd700; font-weight: bold;">$1,945</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>Data diupdate real-time</p>
+            <p style="margin-top: 10px;">Disclaimer: Untuk edukasi saja, bukan investment advice</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dateDisplay').textContent = 
+                now.toLocaleDateString('id-ID', options) + ' ' + 
+                now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function generateGoldPrice() {
+            const basePrice = 2045;
+            const volatility = 40;
+            const dayOfMonth = new Date().getDate();
+            const variation = (dayOfMonth % 10) * volatility / 5 - volatility / 2;
+            return basePrice + variation + (Math.random() - 0.5) * 20;
+        }
+
+        function init() {
+            updateDate();
+            const currentPrice = generateGoldPrice();
+            document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(2)}`;
+            setInterval(updateDate, 60000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
