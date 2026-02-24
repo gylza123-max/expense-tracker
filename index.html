@@ -1,372 +1,93 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            font-family: Arial;
+            background: #0f0f1e;
             color: #e0e0e0;
-            min-height: 100vh;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
         }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 2em;
-            color: #2a9d8f;
-            margin-bottom: 10px;
-        }
-        .date-selector {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-        .date-selector input {
-            padding: 8px 12px;
-            background: rgba(42, 157, 143, 0.1);
-            border: 1px solid #2a9d8f;
-            border-radius: 6px;
-            color: #e0e0e0;
-        }
-        .date-selector button {
-            padding: 8px 16px;
-            background: #2a9d8f;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .date-selector button:hover {
-            background: #1d7a78;
-        }
-        .current-date {
-            text-align: center;
-            color: #a0a0a0;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
-        .total {
-            background: rgba(42, 157, 143, 0.1);
-            border: 2px solid #2a9d8f;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .total-label {
-            color: #a0a0a0;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-        .total-amount {
-            font-size: 2em;
-            color: #2a9d8f;
-            font-weight: bold;
-        }
-        .form {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(42, 157, 143, 0.2);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        label {
-            display: block;
-            color: #a0a0a0;
-            font-size: 0.9em;
-            margin-bottom: 8px;
-            margin-top: 15px;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(42, 157, 143, 0.3);
-            border-radius: 6px;
-            color: #e0e0e0;
-            font-size: 1em;
-            font-family: inherit;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #2a9d8f;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-        button[type="button"] {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            background: #2a9d8f;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button[type="button"]:hover {background: #1d7a78;
-        }
-        .expenses {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .expense {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(42, 157, 143, 0.2);
-            border-radius: 6px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .expense-info {
-            flex: 1;
-        }
-        .expense-category {
-            background: rgba(42, 157, 143, 0.2);
-            color: #2a9d8f;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-        .expense-desc {
-            color: #e0e0e0;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-        .expense-time {
-            color: #707070;
-            font-size: 0.8em;
-        }
-        .expense-amount {
-            color: #2a9d8f;
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        .btn-delete {
-            background: #ff6b6b;
-            color: white;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-        .readonly-note {
-            background: rgba(255, 215, 0, 0.1);
-            border-left: 3px solid #ffed4e;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            color: #ffed4e;
-            font-size: 0.85em;
-        }
-        .empty {
-            text-align: center;
-            color: #707070;
-            padding: 40px 20px;
-        }
+        h1 { color: #2a9d8f; text-align: center; }
+        .date-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #2a9d8f; background: #1a1a2e; color: #e0e0e0; }
+        button { background: #2a9d8f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1d7a78; }
+        .form { background: #1a1a2e; padding: 20px; border: 1px solid #2a9d8f; border-radius: 8px; margin: 20px 0; }
+        input, select, textarea { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #2a9d8f; background: #0f0f1e; color: #e0e0e0; font-family: inherit; }
+        .total { text-align: center; font-size: 2em; color: #2a9d8f; margin: 20px 0; }
+        .expense { background: #1a1a2e; padding: 10px; margin: 10px 0; border-left: 3px solid #2a9d8f; display: flex; justify-content: space-between; }
+        .expense-text { flex: 1; }
+        .expense-amount { color: #2a9d8f; font-weight: bold; margin: 0 10px; }
+        .btn-del { background: #ff6b6b; padding: 5px 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>💰 Expense Tracker</h1>
-            <p style="color: #a0a0a0;">Catat pengeluaran harian</p>
-        </header>
-
-        <div class="date-selector">
+        <h1>💰 Expense Tracker</h1>
+        
+        <div style="text-align: center;">
             <input type="date" id="dateInput">
-            <button onclick="loadSelectedDate()">Cek</button>
-            <button onclick="resetToToday()" style="background: #707070;">Hari Ini</button>
+            <button onclick="loadDate()">Cek</button>
+            <button onclick="today()">Hari Ini</button>
         </div>
-
-        <div class="current-date" id="currentDate"></div>
-
-        <div class="total">
-            <div class="total-label">Total</div>
-            <div class="total-amount" id="totalAmount">Rp 0</div>
+        
+        <div class="total" id="total">Rp 0</div>
+        
+        <div class="form">
+            <select id="cat"><option>Makanan</option><option>Transport</option><option>Belanja</option><option>Lainnya</option></select>
+            <input type="number" id="amt" placeholder="Jumlah (Rp)">
+            <textarea id="desc" placeholder="Deskripsi"></textarea>
+            <button onclick="add()" style="width: 100%;">+ Tambah</button>
         </div>
-
-        <div id="readOnlyNote"></div>
-
-        <div id="formContainer" class="form">
-            <label>Kategori</label>
-            <select id="category">
-                <option value="Makanan">🍔 Makanan</option>
-                <option value="Transport">🚗 Transport</option>
-                <option value="Hiburan">🎬 Hiburan</option>
-                <option value="Belanja">🛍️ Belanja</option>
-                <option value="Kesehatan">⚕️ Kesehatan</option>
-                <option value="Lainnya">📌 Lainnya</option>
-            </select>
-
-            <label>Jumlah (Rp)</label>
-            <input type="number" id="amount" placeholder="Contoh: 50000" min="0">
-
-            <label>Deskripsi</label>
-            <textarea id="description" placeholder="Contoh: Makan siang"></textarea>
-
-            <button type="button" onclick="addExpense()">+ Tambah Pengeluaran</button>
-        </div>
-
-        <div class="expenses" id="expensesList"></div>
+        
+        <div id="list"></div>
     </div>
 
     <script>
-        let expenses = [];
-        let selectedDate = new Date().toDateString();
+        let data = {};
+        let currDate = new Date().toDateString();
 
-        function formatRupiah(amount) {
-            return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+        function getKey() { return 'exp_' + currDate; }
 
-        function updateDateInput() {
-            const dateObj = new Date(selectedDate);
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const day = String(dateObj.getDate()).padStart(2, '0');document.getElementById('dateInput').value = `${year}-${month}-${day}`;
-        }
+        function save() { localStorage.setItem(getKey(), JSON.stringify(data[currDate] || [])); }
+        function load() { data[currDate] = JSON.parse(localStorage.getItem(getKey()) || '[]'); }
 
-        function displayCurrentDate() {
-            const dateObj = new Date(selectedDate);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formatted = dateObj.toLocaleDateString('id-ID', options);
+        function add() {
+            let cat = document.getElementById('cat').value;
+            let amt = parseInt(document.getElementById('amt').value) || 0;
+            let desc = document.getElementById('desc').value || 'No desc';
             
-            const isToday = selectedDate === new Date().toDateString();
-            document.getElementById('currentDate').textContent = formatted + (isToday ? ' (Hari ini)' : ' (History)');
-
-            if (!isToday) {
-                document.getElementById('readOnlyNote').innerHTML = '<div class="readonly-note">📖 Melihat history - Data hanya bisa dilihat, tidak bisa diedit</div>';
-                document.getElementById('formContainer').style.display = 'none';
-            } else {
-                document.getElementById('readOnlyNote').innerHTML = '';
-                document.getElementById('formContainer').style.display = 'block';
-            }
+            if (amt <= 0) { alert('Enter amount'); return; }
+            
+            load();
+            data[currDate].push({ cat, amt, desc, id: Date.now() });
+            save();
+            
+            document.getElementById('amt').value = '';
+            document.getElementById('desc').value = '';
+            render();
         }
 
-        function loadExpenses() {
-            const saved = localStorage.getItem('expenses_' + selectedDate);
-            if (saved) {
-                expenses = JSON.parse(saved);
-            } else {
-                expenses = [];
-            }
-            renderExpenses();
+        function del(id) {
+            load();
+            data[currDate] = data[currDate].filter(x => x.id !== id);
+            save();
+            render();
         }
 
-        function saveExpenses() {
-            localStorage.setItem('expenses_' + selectedDate, JSON.stringify(expenses));
-        }
-
-        function loadSelectedDate() {
-            const input = document.getElementById('dateInput').value;
-            if (!input) {
-                alert('Pilih tanggal');
-                return;
-            }
-            const date = new Date(input + 'T00:00:00');
-            selectedDate = date.toDateString();
-            loadExpenses();
-            displayCurrentDate();
-        }
-
-        function resetToToday() {
-            selectedDate = new Date().toDateString();
-            updateDateInput();
-            loadExpenses();
-            displayCurrentDate();
-        }
-
-        function addExpense() {
-            const category = document.getElementById('category').value;
-            const amount = parseInt(document.getElementById('amount').value);
-            const description = document.getElementById('description').value || 'Tanpa deskripsi';
-
-            if (!amount || amount <= 0) {
-                alert('Masukkan jumlah yang valid!');
-                return;
-            }
-
-            const expense = {
-                id: Date.now(),
-                category: category,
-                amount: amount,
-                description: description,
-                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            expenses.push(expense);
-            saveExpenses();
-            renderExpenses();
-
-            document.getElementById('amount').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('category').value = 'Makanan';
-        }
-
-        function deleteExpense(id) {
-            expenses = expenses.filter(e => e.id !== id);
-            saveExpenses();
-            renderExpenses();
-        }list.innerHTML = expenses.map(e => `
-                <div class="expense">
-                    <div class="expense-info">
-                        <div class="expense-category">${e.category}</div>
-                        <div class="expense-desc">${e.description}</div>
-                        <div class="expense-time">${e.time}</div>
-                    </div>
-                    <div class="expense-amount">${formatRupiah(e.amount)}</div>
-                    ${selectedDate === new Date().toDateString() ? `<button class="btn-delete" onclick="deleteExpense(${e.id})">Hapus</button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        window.addEventListener('load', function() {
-            updateDateInput();
-            loadExpenses();
-            displayCurrentDate();
-        });
-    </script>
-</body>
-</html>
-
-        function renderExpenses() {
-            const list = document.getElementById('expensesList');
-            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-
-            document.getElementById('totalAmount').textContent = formatRupiah(total);
-
-            if (expenses.length === 0) {
-                list.innerHTML = '<div class="empty">Belum ada pengeluaran pada tanggal ini</div>';
-                return;
-        }
-data[currDate].forEach(x => {
+        function render() {
+            load();
+            let total = data[currDate].reduce((s, x) => s + x.amt, 0);
+            document.getElementById('total').innerHTML = 'Rp ' + total.toLocaleString();
+            
+            let html = '';data[currDate].forEach(x => {
                 html += '<div class="expense"><div class="expense-text"><strong>' + x.cat + '</strong> - ' + x.desc + '</div><div class="expense-amount">Rp ' + x.amt.toLocaleString() + '</div><button class="btn-del" onclick="del(' + x.id + ')">Hapus</button></div>';
             });
             document.getElementById('list').innerHTML = html || '<p style="text-align:center; color:#707070;">No expenses</p>';
