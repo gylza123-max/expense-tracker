@@ -7,109 +7,276 @@
     <style>
         body {
             font-family: Arial;
-            background: #0f0f1e;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
             color: #e0e0e0;
             padding: 20px;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
-        h1 { color: #2a9d8f; text-align: center; }
-        .date-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #2a9d8f; background: #1a1a2e; color: #e0e0e0; }
-        button { background: #2a9d8f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+        h1 { color: #2a9d8f; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #a0a0a0; margin-bottom: 20px; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(42, 157, 143, 0.1);
+            border: 2px solid #2a9d8f;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-label { color: #a0a0a0; font-size: 0.85em; margin-bottom: 5px; }
+        .stat-value { font-size: 1.5em; color: #2a9d8f; font-weight: bold; }
+        
+        .form {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(42, 157, 143, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #2a9d8f;
+            background: rgba(255,255,255,0.05);
+            color: #e0e0e0;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+        
+        button {
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        
         button:hover { background: #1d7a78; }
-        .form { background: #1a1a2e; padding: 20px; border: 1px solid #2a9d8f; border-radius: 8px; margin: 20px 0; }
-        input, select, textarea { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #2a9d8f; background: #0f0f1e; color: #e0e0e0; font-family: inherit; }
-        .total { text-align: center; font-size: 2em; color: #2a9d8f; margin: 20px 0; }
-        .expense { background: #1a1a2e; padding: 10px; margin: 10px 0; border-left: 3px solid #2a9d8f; display: flex; justify-content: space-between; }
-        .expense-text { flex: 1; }
-        .expense-amount { color: #2a9d8f; font-weight: bold; margin: 0 10px; }
-        .btn-del { background: #ff6b6b; padding: 5px 10px; }
+        
+        .btn-full { width: 100%; margin: 10px 0; }
+        .btn-del { background: #ff6b6b; padding: 6px 12px; }
+        
+        .expense {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #2a9d8f;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .expense-info { flex: 1; }
+        .expense-cat { background: rgba(42, 157, 143, 0.2); color: #2a9d8f; padding: 3px 8px; border-radius: 3px; font-size: 0.8em; display: inline-block; margin-bottom: 3px; }
+        .expense-desc { color: #e0e0e0; font-weight: 600; }
+        .expense-time { color: #707070; font-size: 0.8em; margin-top: 3px; }
+        
+        .expense-amount { color: #2a9d8f; font-weight: bold; margin: 0 15px; }
+        
+        .empty { text-align: center; color: #707070; padding: 30px; }
+        
+        .monthly-detail {
+            background: rgba(42, 157, 143, 0.1);
+            border: 1px solid #2a9d8f;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .monthly-title { color: #2a9d8f; font-weight: bold; margin-bottom: 10px; }
+        
+        .category-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+            color: #e0e0e0;
+        }
+        
+        .category-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💰 Expense Tracker</h1>
+        <h1>💰 Expense Tracker</h1><p class="subtitle">Catat pengeluaran harian & bulanan</p>
         
-        <div style="text-align: center;">
-            <input type="date" id="dateInput">
-            <button onclick="loadDate()">Cek</button>
-            <button onclick="today()">Hari Ini</button>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Hari Ini</div>
+                <div class="stat-value" id="dayTotal">Rp 0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Bulan Ini</div>
+                <div class="stat-value" id="monthTotal">Rp 0</div>
+            </div>
         </div>
-        
-        <div class="total" id="total">Rp 0</div>
         
         <div class="form">
-            <select id="cat"><option>Makanan</option><option>Transport</option><option>Belanja</option><option>Lainnya</option></select>
-            <input type="number" id="amt" placeholder="Jumlah (Rp)">
-            <textarea id="desc" placeholder="Deskripsi"></textarea>
-            <button onclick="add()" style="width: 100%;">+ Tambah</button>
+            <label>Kategori</label>
+            <select id="cat">
+                <option>🍔 Makanan</option>
+                <option>🚗 Transport</option>
+                <option>🎬 Hiburan</option>
+                <option>🛍️ Belanja</option>
+                <option>⚕️ Kesehatan</option>
+                <option>📌 Lainnya</option>
+            </select>
+            
+            <label>Jumlah (Rp)</label>
+            <input type="number" id="amt" placeholder="Contoh: 50000" min="0">
+            
+            <label>Deskripsi</label>
+            <textarea id="desc" placeholder="Contoh: Makan siang"></textarea>
+            
+            <button class="btn-full" onclick="add()">+ Tambah Pengeluaran</button>
         </div>
         
-        <div id="list"></div>
+        <div class="monthly-detail">
+            <div class="monthly-title">📊 Breakdown Bulan Ini</div>
+            <div id="monthlyBreakdown"></div>
+        </div>
+        
+        <div>
+            <div style="color: #a0a0a0; font-size: 0.9em; margin: 15px 0;">📝 Pengeluaran Hari Ini</div>
+            <div id="list"></div>
+        </div>
     </div>
 
     <script>
-        let data = {};
+        let expenses = {};
         let currDate = new Date().toDateString();
-
-        function getKey() { return 'exp_' + currDate; }
-
-        function save() { localStorage.setItem(getKey(), JSON.stringify(data[currDate] || [])); }
-        function load() { data[currDate] = JSON.parse(localStorage.getItem(getKey()) || '[]'); }
-
+        
+        function getMonthKey() {
+            let d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+        }
+        
+        function getDayKey() {
+            return currDate;
+        }
+        
+        function formatRupiah(n) {
+            return 'Rp ' + n.toLocaleString('id-ID');
+        }
+        
+        function loadDay() {
+            let key = 'exp_' + getDayKey();
+            expenses[getDayKey()] = JSON.parse(localStorage.getItem(key) || '[]');
+        }
+        
+        function saveDay() {
+            let key = 'exp_' + getDayKey();
+            localStorage.setItem(key, JSON.stringify(expenses[getDayKey()] || []));
+        }
+        
+        function getMonthExpenses() {
+            let month = getMonthKey();
+            let total = 0;
+            let byCategory = {};
+            
+            for (let key in localStorage) {
+                if (key.startsWith('exp_')) {
+                    let dateStr = key.replace('exp_', '');
+                    let date = new Date(dateStr);
+                    let dateMonth = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+                    
+                    if (dateMonth === month) {
+                        let items = JSON.parse(localStorage.getItem(key) || '[]');
+                        items.forEach(item => {
+                            total += item.amt;
+                            let cat = item.cat;
+                            byCategory[cat] = (byCategory[cat] || 0) + item.amt;
+                        });
+                    }
+                }
+            }
+            
+            return { total, byCategory };
+        }
+        
         function add() {
             let cat = document.getElementById('cat').value;
             let amt = parseInt(document.getElementById('amt').value) || 0;
-            let desc = document.getElementById('desc').value || 'No desc';
+            let desc = document.getElementById('desc').value || 'Tanpa deskripsi';
             
-            if (amt <= 0) { alert('Enter amount'); return; }
+            if (amt <= 0) { alert('Masukkan jumlah yang valid'); return; }
             
-            load();
-            data[currDate].push({ cat, amt, desc, id: Date.now() });
-            save();
+            loadDay();
+            if (!expenses[getDayKey()]) expenses[getDayKey()] = [];expenses[getDayKey()].push({
+                cat: cat,
+                amt: amt,
+                desc: desc,
+                id: Date.now(),
+                time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})
+            });
             
+            saveDay();
             document.getElementById('amt').value = '';
             document.getElementById('desc').value = '';
             render();
         }
-
+        
         function del(id) {
-            load();
-            data[currDate] = data[currDate].filter(x => x.id !== id);
-            save();
+            loadDay();
+            expenses[getDayKey()] = expenses[getDayKey()].filter(x => x.id !== id);
+            saveDay();
             render();
         }
-
+        
         function render() {
-            load();
-            let total = data[currDate].reduce((s, x) => s + x.amt, 0);
-            document.getElementById('total').innerHTML = 'Rp ' + total.toLocaleString();
+            loadDay();
             
-            let html = '';data[currDate].forEach(x => {
-                html += '<div class="expense"><div class="expense-text"><strong>' + x.cat + '</strong> - ' + x.desc + '</div><div class="expense-amount">Rp ' + x.amt.toLocaleString() + '</div><button class="btn-del" onclick="del(' + x.id + ')">Hapus</button></div>';
+            // Day total
+            let dayTotal = (expenses[getDayKey()] || []).reduce((s, x) => s + x.amt, 0);
+            document.getElementById('dayTotal').textContent = formatRupiah(dayTotal);
+            
+            // Month stats
+            let month = getMonthExpenses();
+            document.getElementById('monthTotal').textContent = formatRupiah(month.total);
+            
+            // Monthly breakdown
+            let breakdown = '';
+            for (let cat in month.byCategory) {
+                breakdown += `<div class="category-row"><span>${cat}</span><span style="color: #2a9d8f; font-weight: bold;">${formatRupiah(month.byCategory[cat])}</span></div>`;
+            }
+            if (breakdown === '') breakdown = '<div class="category-row"><span style="color: #707070;">Belum ada pengeluaran bulan ini</span></div>';
+            document.getElementById('monthlyBreakdown').innerHTML = breakdown;
+            
+            // Day list
+            let list = '';
+            (expenses[getDayKey()] || []).forEach(x => {
+                list += `<div class="expense">
+                    <div class="expense-info">
+                        <div class="expense-cat">${x.cat}</div>
+                        <div class="expense-desc">${x.desc}</div>
+                        <div class="expense-time">${x.time}</div>
+                    </div>
+                    <div class="expense-amount">${formatRupiah(x.amt)}</div>
+                    <button class="btn-del" onclick="del(${x.id})">Hapus</button>
+                </div>`;
             });
-            document.getElementById('list').innerHTML = html || '<p style="text-align:center; color:#707070;">No expenses</p>';
+            
+            if (list === '') list = '<div class="empty">Belum ada pengeluaran hari ini</div>';
+            document.getElementById('list').innerHTML = list;
         }
-
-        function loadDate() {
-            let d = document.getElementById('dateInput').value;
-            if(!d) { alert('Select date'); return; }
-            currDate = new Date(d).toDateString();
-            render();
-        }
-
-        function today() {
-            currDate = new Date().toDateString();
-            let y = new Date().getFullYear();
-            let m = String(new Date().getMonth() + 1).padStart(2, '0');
-            let d = String(new Date().getDate()).padStart(2, '0');
-            document.getElementById('dateInput').value = y + '-' + m + '-' + d;
-            render();
-        }
-
-        today();
+        
+        render();
     </script>
 </body>
 </html>
