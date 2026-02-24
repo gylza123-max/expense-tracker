@@ -366,3 +366,29 @@
                 list.innerHTML = '<div class="empty">Belum ada pengeluaran pada tanggal ini</div>';
                 return;
         }
+data[currDate].forEach(x => {
+                html += '<div class="expense"><div class="expense-text"><strong>' + x.cat + '</strong> - ' + x.desc + '</div><div class="expense-amount">Rp ' + x.amt.toLocaleString() + '</div><button class="btn-del" onclick="del(' + x.id + ')">Hapus</button></div>';
+            });
+            document.getElementById('list').innerHTML = html || '<p style="text-align:center; color:#707070;">No expenses</p>';
+        }
+
+        function loadDate() {
+            let d = document.getElementById('dateInput').value;
+            if(!d) { alert('Select date'); return; }
+            currDate = new Date(d).toDateString();
+            render();
+        }
+
+        function today() {
+            currDate = new Date().toDateString();
+            let y = new Date().getFullYear();
+            let m = String(new Date().getMonth() + 1).padStart(2, '0');
+            let d = String(new Date().getDate()).padStart(2, '0');
+            document.getElementById('dateInput').value = y + '-' + m + '-' + d;
+            render();
+        }
+
+        today();
+    </script>
+</body>
+</html>
