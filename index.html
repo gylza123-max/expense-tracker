@@ -30,6 +30,38 @@
             color: #2a9d8f;
             margin-bottom: 10px;
         }
+        .date-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .date-selector input {
+            padding: 8px 12px;
+            background: rgba(42, 157, 143, 0.1);
+            border: 1px solid #2a9d8f;
+            border-radius: 6px;
+            color: #e0e0e0;
+        }
+        .date-selector button {
+            padding: 8px 16px;
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .date-selector button:hover {
+            background: #1d7a78;
+        }
+        .current-date {
+            text-align: center;
+            color: #a0a0a0;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
         .total {
             background: rgba(42, 157, 143, 0.1);
             border: 2px solid #2a9d8f;
@@ -80,7 +112,7 @@
             resize: vertical;
             min-height: 60px;
         }
-        button {
+        button[type="button"] {
             display: block;
             width: 100%;
             padding: 12px;
@@ -93,8 +125,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-        button:hover {
-            background: #1d7a78;
+        button[type="button"]:hover {background: #1d7a78;
         }
         .expenses {
             display: flex;
@@ -136,7 +167,8 @@
             font-size: 1.1em;
             font-weight: bold;
             margin-right: 10px;
-        }.btn-delete {
+        }
+        .btn-delete {
             background: #ff6b6b;
             color: white;
             padding: 6px 12px;
@@ -144,6 +176,15 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.9em;
+        }
+        .readonly-note {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #ffed4e;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #ffed4e;
+            font-size: 0.85em;
         }
         .empty {
             text-align: center;
@@ -159,12 +200,22 @@
             <p style="color: #a0a0a0;">Catat pengeluaran harian</p>
         </header>
 
+        <div class="date-selector">
+            <input type="date" id="dateInput">
+            <button onclick="loadSelectedDate()">Cek</button>
+            <button onclick="resetToToday()" style="background: #707070;">Hari Ini</button>
+        </div>
+
+        <div class="current-date" id="currentDate"></div>
+
         <div class="total">
-            <div class="total-label">Total Hari Ini</div>
+            <div class="total-label">Total</div>
             <div class="total-amount" id="totalAmount">Rp 0</div>
         </div>
 
-        <div class="form">
+        <div id="readOnlyNote"></div>
+
+        <div id="formContainer" class="form">
             <label>Kategori</label>
             <select id="category">
                 <option value="Makanan">🍔 Makanan</option>
@@ -189,23 +240,67 @@
 
     <script>
         let expenses = [];
+        let selectedDate = new Date().toDateString();
 
         function formatRupiah(amount) {
             return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
+        function updateDateInput() {
+            const dateObj = new Date(selectedDate);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');document.getElementById('dateInput').value = `${year}-${month}-${day}`;
+        }
+
+        function displayCurrentDate() {
+            const dateObj = new Date(selectedDate);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formatted = dateObj.toLocaleDateString('id-ID', options);
+            
+            const isToday = selectedDate === new Date().toDateString();
+            document.getElementById('currentDate').textContent = formatted + (isToday ? ' (Hari ini)' : ' (History)');
+
+            if (!isToday) {
+                document.getElementById('readOnlyNote').innerHTML = '<div class="readonly-note">📖 Melihat history - Data hanya bisa dilihat, tidak bisa diedit</div>';
+                document.getElementById('formContainer').style.display = 'none';
+            } else {
+                document.getElementById('readOnlyNote').innerHTML = '';
+                document.getElementById('formContainer').style.display = 'block';
+            }
+        }
+
         function loadExpenses() {
-            const today = new Date().toDateString();
-            const saved = localStorage.getItem('expenses_' + today);
+            const saved = localStorage.getItem('expenses_' + selectedDate);
             if (saved) {
                 expenses = JSON.parse(saved);
+            } else {
+                expenses = [];
             }
             renderExpenses();
         }
 
         function saveExpenses() {
-            const today = new Date().toDateString();
-            localStorage.setItem('expenses_' + today, JSON.stringify(expenses));
+            localStorage.setItem('expenses_' + selectedDate, JSON.stringify(expenses));
+        }
+
+        function loadSelectedDate() {
+            const input = document.getElementById('dateInput').value;
+            if (!input) {
+                alert('Pilih tanggal');
+                return;
+            }
+            const date = new Date(input + 'T00:00:00');
+            selectedDate = date.toDateString();
+            loadExpenses();
+            displayCurrentDate();
+        }
+
+        function resetToToday() {
+            selectedDate = new Date().toDateString();
+            updateDateInput();
+            loadExpenses();
+            displayCurrentDate();
         }
 
         function addExpense() {
@@ -230,7 +325,6 @@
             saveExpenses();
             renderExpenses();
 
-            // Clear form
             document.getElementById('amount').value = '';
             document.getElementById('description').value = '';
             document.getElementById('category').value = 'Makanan';
@@ -240,17 +334,6 @@
             expenses = expenses.filter(e => e.id !== id);
             saveExpenses();
             renderExpenses();
-        }
-
-        function renderExpenses() {
-            const list = document.getElementById('expensesList');
-            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-
-            document.getElementById('totalAmount').textContent = formatRupiah(total);
-
-            if (expenses.length === 0) {
-                list.innerHTML = '<div class="empty">Belum ada pengeluaran hari ini</div>';
-                return;
         }list.innerHTML = expenses.map(e => `
                 <div class="expense">
                     <div class="expense-info">
@@ -259,12 +342,27 @@
                         <div class="expense-time">${e.time}</div>
                     </div>
                     <div class="expense-amount">${formatRupiah(e.amount)}</div>
-                    <button class="btn-delete" onclick="deleteExpense(${e.id})">Hapus</button>
+                    ${selectedDate === new Date().toDateString() ? `<button class="btn-delete" onclick="deleteExpense(${e.id})">Hapus</button>` : ''}
                 </div>
             `).join('');
         }
 
-        loadExpenses();
+        window.addEventListener('load', function() {
+            updateDateInput();
+            loadExpenses();
+            displayCurrentDate();
+        });
     </script>
 </body>
 </html>
+
+        function renderExpenses() {
+            const list = document.getElementById('expensesList');
+            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+            document.getElementById('totalAmount').textContent = formatRupiah(total);
+
+            if (expenses.length === 0) {
+                list.innerHTML = '<div class="empty">Belum ada pengeluaran pada tanggal ini</div>';
+                return;
+        }
