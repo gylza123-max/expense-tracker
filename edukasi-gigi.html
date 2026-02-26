@@ -524,38 +524,109 @@
             }
 
             function draw3DTeeth(x, y) {
-                // Draw back teeth (darker for depth)
-                ctx.fillStyle = '#F5DEB3';
-                ctx.strokeStyle = '#D4B5A0';
-                ctx.lineWidth = 2;
-                ctx.shadowColor = 'rgba(0,0,0,0.3)';
-                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 6;
 
+                // Draw 8 incisor teeth yang besar dan jelas
                 for (let i = 0; i < 8; i++) {
-                    const px = x + (i * 25);
-                    const py = y;
+                    const startX = x + (i * 24);
+                    const startY = y;
                     
-                    // 3D perspective
-                    const depth = (i - 3.5) * 5;
-                    const scale = 1 - depth * 0.02;
+                    // Main tooth body
+                    const toothWidth = 16;
+                    const toothHeight = 32;
+
+                    // Tooth outline - anatomically correct
+                    ctx.beginPath();
+                    // Top edge (incisal edge)
+                    ctx.moveTo(startX + 2, startY);
+                    ctx.lineTo(startX + toothWidth - 2, startY);
+                    // Right cervical line (junction with gum)
+                    ctx.quadraticCurveTo(startX + toothWidth, startY + toothHeight * 0.65, startX + toothWidth - 1, startY + toothHeight);
+                    // Bottom root (pointed)
+                    ctx.lineTo(startX + toothWidth * 0.5, startY + toothHeight + 8);
+                    ctx.lineTo(startX + 1, startY + toothHeight);
+                    // Left cervical line
+                    ctx.quadraticCurveTo(startX, startY + toothHeight * 0.65, startX + 2, startY);
+                    ctx.closePath();
+
+                    // Tooth color with opacity for depth
+                    const toothGradient = ctx.createLinearGradient(startX, startY, startX + toothWidth, startY);
+                    toothGradient.addColorStop(0, '#FAF6F1');
+                    toothGradient.addColorStop(0.2, '#FFFBF7');
+                    toothGradient.addColorStop(0.5, '#FFFDFB');
+                    toothGradient.addColorStop(0.8, '#FAF9F7');
+                    toothGradient.addColorStop(1, '#F5EDE5');
                     
-                    ctx.save();
-                    ctx.globalAlpha = 0.9 + depth * 0.01;
-                    ctx.fillRect(px, py + Math.abs(depth) * 0.5, 20 * scale, 35 * scale);
-                    ctx.strokeRect(px, py + Math.abs(depth) * 0.5, 20 * scale, 35 * scale);
-                    
-                    // Highlight
-                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                    ctx.fillRect(px + 2, py + 2 + Math.abs(depth) * 0.5, 5 * scale, 8 * scale);
-                    
-                    // Gum dengan shadow
-                    ctx.fillStyle = '#FF1493';
-                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
-                    ctx.shadowBlur = 4;
-                    ctx.fillRect(px, py + 35 * scale + Math.abs(depth) * 0.5, 20 * scale, 5 * scale);
-                    
-                    ctx.restore();
+                    ctx.fillStyle = toothGradient;
+                    ctx.fill();
+
+                    // Tooth border - darker
+                    ctx.strokeStyle = '#D4C8BD';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    // Incisal edge highlight (cahaya putih di puncak)
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(startX + 3, startY + 0.5);
+                    ctx.lineTo(startX + toothWidth - 3, startY + 0.5);
+                    ctx.stroke();
+
+                    // Facial surface shine
+                    const shineGrad = ctx.createRadialGradient(startX + toothWidth * 0.3, startY + toothHeight * 0.3, 0,
+                                                                 startX + toothWidth * 0.3, startY + toothHeight * 0.3, toothWidth * 1.5);
+                    shineGrad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+                    shineGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = shineGrad;
+                    ctx.fillRect(startX, startY, toothWidth, toothHeight * 0.6);
+
+                    // Tooth midline (developmental groove)
+                    ctx.strokeStyle = 'rgba(200, 180, 170, 0.5)';
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(startX + toothWidth * 0.5, startY + 2);
+                    ctx.lineTo(startX + toothWidth * 0.5, startY + toothHeight * 0.7);
+                    ctx.stroke();
                 }
+
+                // Gum line / CEJ (Cemento-Enamel Junction)
+                ctx.strokeStyle = '#E75480';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(x + 1, y + 32);
+                for (let i = 0; i < 9; i++) {
+                    const gumX = x + (i * 23) + 0;
+                    const gumY = y + 32 + Math.sin(i * 0.8) * 1;
+                    if (i === 0) ctx.moveTo(gumX, gumY);
+                    else ctx.lineTo(gumX, gumY);
+                }
+                ctx.stroke();
+
+                // Gum / Gingiva area
+                ctx.fillStyle = '#F25280';
+                ctx.beginPath();
+                ctx.moveTo(x + 1, y + 32);
+                for (let i = 0; i < 9; i++) {
+                    const gumX = x + (i * 23);
+                    const gumY = y + 32 + Math.sin(i * 0.8) * 1;
+                    ctx.lineTo(gumX, gumY);
+                }
+                ctx.lineTo(x + 190, y + 44);
+                ctx.lineTo(x, y + 44);
+                ctx.closePath();
+                ctx.fill();
+
+                // Gum texture/shading
+                ctx.fillStyle = 'rgba(200, 0, 100, 0.2)';
+                ctx.beginPath();
+                ctx.moveTo(x, y + 32);
+                ctx.quadraticCurveTo(x + 95, y + 35, x + 190, y + 32);
+                ctx.lineTo(x + 190, y + 34);
+                ctx.quadraticCurveTo(x + 95, y + 31, x, y + 34);
+                ctx.closePath();
+                ctx.fill();
             }
 
             function draw3DBrush(x, y, angle, progress) {
@@ -720,50 +791,110 @@
             }
 
             function draw3DTeeth() {
-                ctx.shadowColor = 'rgba(0,0,0,0.3)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetY = 3;
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 6;
 
+                // Draw 2 large teeth untuk flossing demo
                 const teeth = [
-                    { x: 80, y: 60 },
-                    { x: 160, y: 60 },
+                    { x: 80, y: 50, label: 'Incisor' },
+                    { x: 170, y: 50, label: 'Incisor' },
                 ];
 
                 teeth.forEach((tooth, idx) => {
-                    // Tooth base
-                    const gradient = ctx.createLinearGradient(tooth.x, tooth.y, tooth.x + 60, tooth.y);
-                    gradient.addColorStop(0, '#F5DEB3');
-                    gradient.addColorStop(0.5, '#FFFEF7');
-                    gradient.addColorStop(1, '#F5DEB3');
+                    const toothWidth = 35;
+                    const toothHeight = 80;
+
+                    // Main tooth shape
+                    ctx.beginPath();
+                    // Top edge (incisal)
+                    ctx.moveTo(tooth.x + 4, tooth.y);
+                    ctx.lineTo(tooth.x + toothWidth - 4, tooth.y);
+                    // Right side
+                    ctx.quadraticCurveTo(tooth.x + toothWidth + 2, tooth.y + toothHeight * 0.6, 
+                                        tooth.x + toothWidth - 2, tooth.y + toothHeight);
+                    // Root point
+                    ctx.lineTo(tooth.x + toothWidth * 0.5, tooth.y + toothHeight + 12);
+                    // Left side
+                    ctx.lineTo(tooth.x + 2, tooth.y + toothHeight);
+                    ctx.quadraticCurveTo(tooth.x - 2, tooth.y + toothHeight * 0.6, 
+                                        tooth.x + 4, tooth.y);
+                    ctx.closePath();
+
+                    // Tooth gradient
+                    const toothGrad = ctx.createLinearGradient(tooth.x, tooth.y, tooth.x + toothWidth, tooth.y);
+                    toothGrad.addColorStop(0, '#FAF6F1');
+                    toothGrad.addColorStop(0.3, '#FFFBF7');
+                    toothGrad.addColorStop(0.7, '#FFFDFB');
+                    toothGrad.addColorStop(1, '#F5EDE5');
                     
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(tooth.x, tooth.y, 60, 80);
-                    
-                    // Highlight untuk 3D effect
-                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-                    ctx.fillRect(tooth.x + 3, tooth.y + 3, 12, 20);
-                    
+                    ctx.fillStyle = toothGrad;
+                    ctx.fill();
+
                     // Border
-                    ctx.strokeStyle = '#D4B5A0';
+                    ctx.strokeStyle = '#D4C8BD';
                     ctx.lineWidth = 2;
-                    ctx.strokeRect(tooth.x, tooth.y, 60, 80);
-                    
-                    // Gum shadow
-                    ctx.fillStyle = '#FF69B4';
-                    ctx.fillRect(tooth.x, tooth.y + 80, 60, 10);
-                    
-                    // Gum highlight
-                    ctx.fillStyle = 'rgba(255, 50, 100, 0.7)';
-                    ctx.fillRect(tooth.x, tooth.y + 80, 10, 10);
+                    ctx.stroke();
+
+                    // Incisal edge highlight
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(tooth.x + 5, tooth.y + 1);
+                    ctx.lineTo(tooth.x + toothWidth - 5, tooth.y + 1);
+                    ctx.stroke();
+
+                    // Facial surface shine
+                    const radialShine = ctx.createRadialGradient(tooth.x + toothWidth * 0.35, tooth.y + toothHeight * 0.25, 0,
+                                                                   tooth.x + toothWidth * 0.35, tooth.y + toothHeight * 0.25, toothWidth * 2);
+                    radialShine.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+                    radialShine.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = radialShine;
+                    ctx.fillRect(tooth.x, tooth.y, toothWidth, toothHeight * 0.65);
+
+                    // Midline groove
+                    ctx.strokeStyle = 'rgba(200, 180, 170, 0.6)';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(tooth.x + toothWidth * 0.5, tooth.y + 3);
+                    ctx.lineTo(tooth.x + toothWidth * 0.5, tooth.y + toothHeight * 0.75);
+                    ctx.stroke();
+
+                    // Contact area shadow (between teeth)
+                    if (idx === 0) {
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                        ctx.beginPath();
+                        ctx.arc(tooth.x + toothWidth + 8, tooth.y + toothHeight * 0.4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 });
 
-                // Gum line dengan 3D depth
-                ctx.strokeStyle = 'rgba(255, 20, 80, 0.8)';
+                // Gum line
+                ctx.strokeStyle = '#E75480';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.moveTo(50, 140);
-                ctx.quadraticCurveTo(150, 142, 250, 140);
+                ctx.moveTo(60, 130);
+                ctx.quadraticCurveTo(150, 135, 240, 130);
                 ctx.stroke();
+
+                // Gum area
+                ctx.fillStyle = '#F25280';
+                ctx.beginPath();
+                ctx.moveTo(60, 130);
+                ctx.quadraticCurveTo(150, 135, 240, 130);
+                ctx.lineTo(240, 150);
+                ctx.lineTo(60, 150);
+                ctx.closePath();
+                ctx.fill();
+
+                // Gum shading
+                ctx.fillStyle = 'rgba(200, 0, 100, 0.25)';
+                ctx.beginPath();
+                ctx.moveTo(60, 130);
+                ctx.quadraticCurveTo(150, 133, 240, 130);
+                ctx.lineTo(240, 135);
+                ctx.quadraticCurveTo(150, 130, 60, 135);
+                ctx.closePath();
+                ctx.fill();
             }
 
             function draw3DFloss(progress) {
