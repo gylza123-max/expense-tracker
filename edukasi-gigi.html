@@ -493,37 +493,132 @@
             updateFlossStep();
         }
 
-        // Animation Functions
+        // Animation Functions - 3D Version
         function startSikatAnimation() {
             const canvas = document.getElementById('canvasSikat');
             const ctx = canvas.getContext('2d');
             let animationProgress = 0;
+            let particles = [];
 
-            function drawTeeth(x, y, scale = 1) {
-                ctx.fillStyle = '#FFFEF7';
-                ctx.strokeStyle = '#999';
+            function createParticle(x, y) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    z: Math.random() * 30 - 15,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: Math.random() * -3 - 1,
+                    vz: (Math.random() - 0.5) * 0.5,
+                    life: 1,
+                    size: Math.random() * 2 + 1
+                });
+            }
+
+            function project3D(x, y, z) {
+                const perspective = 250;
+                const scale = perspective / (perspective + z);
+                return {
+                    x: x * scale,
+                    y: y * scale,
+                    scale: scale
+                };
+            }
+
+            function draw3DTeeth(x, y) {
+                // Draw back teeth (darker for depth)
+                ctx.fillStyle = '#F5DEB3';
+                ctx.strokeStyle = '#D4B5A0';
                 ctx.lineWidth = 2;
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 8;
 
                 for (let i = 0; i < 8; i++) {
-                    const px = x + (i * 25) * scale;
+                    const px = x + (i * 25);
                     const py = y;
-                    ctx.fillRect(px, py, 20 * scale, 30 * scale);
-                    ctx.strokeRect(px, py, 20 * scale, 30 * scale);
+                    
+                    // 3D perspective
+                    const depth = (i - 3.5) * 5;
+                    const scale = 1 - depth * 0.02;
+                    
+                    ctx.save();
+                    ctx.globalAlpha = 0.9 + depth * 0.01;
+                    ctx.fillRect(px, py + Math.abs(depth) * 0.5, 20 * scale, 35 * scale);
+                    ctx.strokeRect(px, py + Math.abs(depth) * 0.5, 20 * scale, 35 * scale);
+                    
+                    // Highlight
+                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                    ctx.fillRect(px + 2, py + 2 + Math.abs(depth) * 0.5, 5 * scale, 8 * scale);
+                    
+                    // Gum dengan shadow
+                    ctx.fillStyle = '#FF1493';
+                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                    ctx.shadowBlur = 4;
+                    ctx.fillRect(px, py + 35 * scale + Math.abs(depth) * 0.5, 20 * scale, 5 * scale);
+                    
+                    ctx.restore();
                 }
             }
 
-            function drawBrush(x, y, angle) {
+            function draw3DBrush(x, y, angle, progress) {
                 ctx.save();
                 ctx.translate(x, y);
                 ctx.rotate(angle);
+                ctx.shadowColor = 'rgba(0,0,0,0.4)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 3;
 
-                ctx.fillStyle = '#FF6B6B';
-                ctx.fillRect(-8, 0, 16, 15);
+                // Kepala sikat dengan 3D effect
+                const gradient = ctx.createLinearGradient(-10, 0, 10, 0);
+                gradient.addColorStop(0, '#CC4444');
+                gradient.addColorStop(0.5, '#FF6B6B');
+                gradient.addColorStop(1, '#CC4444');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(-10, 0);
+                ctx.lineTo(10, 0);
+                ctx.lineTo(12, 20);
+                ctx.lineTo(-12, 20);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.strokeStyle = '#8B0000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
 
-                ctx.fillStyle = '#FFD93D';
-                for (let i = 0; i < 12; i++) {
-                    ctx.fillRect(-6 + i * 1, 15, 1, 8);
+                // Bulu sikat dengan 3D effect
+                for (let i = 0; i < 20; i++) {
+                    const offsetX = -9 + i * 1;
+                    const bristleHeight = 15 + Math.sin(progress * Math.PI * 4 + i * 0.3) * 4;
+                    const bristleOffsetY = Math.cos(progress * Math.PI * 3 + i) * 2;
+                    
+                    // Side bristles (darker)
+                    if (i < 4 || i > 16) {
+                        ctx.strokeStyle = 'rgba(255, 200, 0, 0.6)';
+                        ctx.lineWidth = 1;
+                    } else {
+                        // Front bristles (brighter)
+                        ctx.strokeStyle = '#FFD700';
+                        ctx.lineWidth = 1.5;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(offsetX, 20);
+                    ctx.lineTo(offsetX, 20 + bristleHeight);
+                    ctx.stroke();
                 }
+
+                // Gagang sikat 3D
+                const handleGradient = ctx.createLinearGradient(-4, 30, 4, 30);
+                handleGradient.addColorStop(0, '#0088AA');
+                handleGradient.addColorStop(0.5, '#00BCD4');
+                handleGradient.addColorStop(1, '#0088AA');
+                
+                ctx.fillStyle = handleGradient;
+                ctx.fillRect(-4, 30, 8, 25);
+                
+                // Handle highlight
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.fillRect(-3, 31, 2, 23);
 
                 ctx.restore();
             }
@@ -531,19 +626,65 @@
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                animationProgress = (animationProgress + 0.02) % 1;
+                animationProgress = (animationProgress + 0.015) % 1;
 
-                drawTeeth(20, 100);
+                // Gradient background
+                const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bgGradient.addColorStop(0, '#E0F7FA');
+                bgGradient.addColorStop(1, '#B2EBF2');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                const brushX = 40 + Math.sin(animationProgress * Math.PI * 4) * 30;
-                const brushY = 70;
-                const angle = Math.sin(animationProgress * Math.PI * 2) * 0.3;
+                // Draw teeth (back layer)
+                draw3DTeeth(15, 80);
 
-                drawBrush(brushX, brushY, angle);
+                // Brush movement dengan 3D rotation
+                const brushX = 120 + Math.sin(animationProgress * Math.PI * 4) * 45;
+                const brushY = 65 + Math.cos(animationProgress * Math.PI * 2) * 10;
+                const angle = Math.sin(animationProgress * Math.PI * 3) * 0.5 + 
+                              Math.cos(animationProgress * Math.PI * 2) * 0.3;
 
-                ctx.fillStyle = '#00BCD4';
-                ctx.font = 'bold 14px Nunito';
-                ctx.fillText('Gerakan melingkar pada gigi', 20, canvas.height - 20);
+                draw3DBrush(brushX, brushY, angle, animationProgress);
+
+                // Draw particles dengan depth
+                particles.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.z += p.vz;
+                    p.life -= 0.015;
+
+                    const proj = project3D(p.x, p.y, p.z);
+                    const alpha = p.life * 0.8;
+                    
+                    // Bubble effect
+                    ctx.fillStyle = `rgba(100, 220, 255, ${alpha * 0.6})`;
+                    ctx.beginPath();
+                    ctx.arc(120 + proj.x, 100 + proj.y, p.size * proj.scale, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Bubble shine
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.4})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(120 + proj.x - 1, 100 + proj.y - 1, p.size * proj.scale * 0.4, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                    }
+                });
+
+                // Create particles
+                if (Math.sin(animationProgress * Math.PI * 2) > 0 && Math.random() > 0.65) {
+                    createParticle(brushX - 120, brushY - 100, 0);
+                }
+
+                // Text dengan shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 4;
+                ctx.fillStyle = '#00695C';
+                ctx.font = 'bold 16px Poppins';
+                ctx.fillText('💧 Busa terbentuk dengan gerakan melingkar', 15, canvas.height - 10);
 
                 sikatAnimationId = requestAnimationFrame(animate);
             }
@@ -555,55 +696,182 @@
             const canvas = document.getElementById('canvasFloss');
             const ctx = canvas.getContext('2d');
             let animationProgress = 0;
+            let debris = [];
 
-            function drawTeeth() {
-                ctx.fillStyle = '#FFFEF7';
-                ctx.strokeStyle = '#999';
-                ctx.lineWidth = 2;
-
-                for (let i = 0; i < 4; i++) {
-                    ctx.fillRect(80 + i * 50, 80, 40, 60);
-                    ctx.strokeRect(80 + i * 50, 80, 40, 60);
-                }
+            function createDebris(x, y) {
+                debris.push({
+                    x: x,
+                    y: y,
+                    z: Math.random() * 30 - 15,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: Math.random() * -3 - 1,
+                    vz: (Math.random() - 0.5) * 0.5,
+                    life: 1,
+                    size: Math.random() * 1.5 + 0.5,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotVel: (Math.random() - 0.5) * 0.2
+                });
             }
 
-            function drawFloss(progress) {
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 2;
+            function project3D(x, y, z) {
+                const perspective = 250;
+                const scale = perspective / (perspective + z);
+                return { x: x * scale, y: y * scale, scale };
+            }
+
+            function draw3DTeeth() {
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetY = 3;
+
+                const teeth = [
+                    { x: 80, y: 60 },
+                    { x: 160, y: 60 },
+                ];
+
+                teeth.forEach((tooth, idx) => {
+                    // Tooth base
+                    const gradient = ctx.createLinearGradient(tooth.x, tooth.y, tooth.x + 60, tooth.y);
+                    gradient.addColorStop(0, '#F5DEB3');
+                    gradient.addColorStop(0.5, '#FFFEF7');
+                    gradient.addColorStop(1, '#F5DEB3');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(tooth.x, tooth.y, 60, 80);
+                    
+                    // Highlight untuk 3D effect
+                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    ctx.fillRect(tooth.x + 3, tooth.y + 3, 12, 20);
+                    
+                    // Border
+                    ctx.strokeStyle = '#D4B5A0';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(tooth.x, tooth.y, 60, 80);
+                    
+                    // Gum shadow
+                    ctx.fillStyle = '#FF69B4';
+                    ctx.fillRect(tooth.x, tooth.y + 80, 60, 10);
+                    
+                    // Gum highlight
+                    ctx.fillStyle = 'rgba(255, 50, 100, 0.7)';
+                    ctx.fillRect(tooth.x, tooth.y + 80, 10, 10);
+                });
+
+                // Gum line dengan 3D depth
+                ctx.strokeStyle = 'rgba(255, 20, 80, 0.8)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(50, 140);
+                ctx.quadraticCurveTo(150, 142, 250, 140);
+                ctx.stroke();
+            }
+
+            function draw3DFloss(progress) {
+                const gapX = 140;
+                const topY = 35;
+                const bottomY = 165;
+                const verticalMove = Math.sin(progress * Math.PI * 2) * 25;
+
+                // Benang dengan gradient & shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 6;
+                
+                const flossGradient = ctx.createLinearGradient(gapX - 2, topY, gapX + 2, bottomY);
+                flossGradient.addColorStop(0, '#B3E5FC');
+                flossGradient.addColorStop(0.3, '#FFFFFF');
+                flossGradient.addColorStop(0.7, '#FFFFFF');
+                flossGradient.addColorStop(1, '#B3E5FC');
+
+                ctx.strokeStyle = flossGradient;
+                ctx.lineWidth = 4;
                 ctx.lineCap = 'round';
 
-                const gapX = 120;
-                const topY = 50;
-                const bottomY = 150;
-                const verticalMove = Math.sin(progress * Math.PI * 2) * 15;
-
+                // Upper segment
                 ctx.beginPath();
                 ctx.moveTo(gapX, topY);
-                ctx.lineTo(gapX, 80 + verticalMove);
+                ctx.bezierCurveTo(gapX - 8, topY + 20, gapX - 12, 70, gapX, 80 + verticalMove);
                 ctx.stroke();
 
+                // Lower segment
                 ctx.beginPath();
                 ctx.moveTo(gapX, 140 + verticalMove);
-                ctx.lineTo(gapX, bottomY);
+                ctx.bezierCurveTo(gapX - 12, 160, gapX - 8, bottomY - 20, gapX, bottomY);
                 ctx.stroke();
 
-                if (Math.sin(progress * Math.PI * 2) > 0) {
-                    ctx.fillStyle = 'rgba(255, 152, 0, 0.5)';
-                    ctx.fillRect(gapX - 2, 100, 4, 20);
-                }
+                // Floss highlight (cahaya)
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(gapX - 1, topY + 15);
+                ctx.lineTo(gapX - 1, bottomY - 15);
+                ctx.stroke();
+
+                // Glow effect
+                ctx.strokeStyle = 'rgba(0, 188, 212, 0.2)';
+                ctx.lineWidth = 10;
+                ctx.beginPath();
+                ctx.moveTo(gapX, topY);
+                ctx.lineTo(gapX, bottomY);
+                ctx.stroke();
             }
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                animationProgress = (animationProgress + 0.02) % 1;
+                animationProgress = (animationProgress + 0.018) % 1;
 
-                drawTeeth();
-                drawFloss(animationProgress);
+                // Gradient background
+                const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bgGradient.addColorStop(0, '#E0F7FA');
+                bgGradient.addColorStop(1, '#B2EBF2');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                ctx.fillStyle = '#00BCD4';
-                ctx.font = 'bold 14px Nunito';
-                ctx.fillText('Gerakan naik-turun di sela gigi', 20, canvas.height - 20);
+                draw3DTeeth();
+                draw3DFloss(animationProgress);
+
+                // Draw debris dengan depth
+                debris.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.z += p.vz;
+                    p.life -= 0.012;
+                    p.rotation += p.rotVel;
+
+                    const proj = project3D(p.x, p.y, p.z);
+                    const alpha = p.life * 0.7;
+
+                    ctx.save();
+                    ctx.translate(140 + proj.x, 100 + proj.y);
+                    ctx.rotate(p.rotation);
+                    
+                    ctx.fillStyle = `rgba(255, 152, 0, ${alpha})`;
+                    ctx.fillRect(-p.size * proj.scale, -p.size * proj.scale, 
+                                 p.size * proj.scale * 2, p.size * proj.scale * 2);
+                    
+                    // Debris shine
+                    ctx.fillStyle = `rgba(255, 220, 100, ${alpha * 0.5})`;
+                    ctx.fillRect(-p.size * proj.scale * 0.3, -p.size * proj.scale * 0.3,
+                                 p.size * proj.scale, p.size * proj.scale);
+                    
+                    ctx.restore();
+
+                    if (p.life <= 0) {
+                        debris.splice(i, 1);
+                    }
+                });
+
+                // Create debris
+                if (Math.sin(animationProgress * Math.PI * 2) > 0.3 && Math.random() > 0.75) {
+                    createDebris(0, 0);
+                }
+
+                // Text dengan shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 4;
+                ctx.fillStyle = '#00695C';
+                ctx.font = 'bold 16px Poppins';
+                ctx.fillText('✨ Kotoran terangkat dengan gerakan naik-turun', 15, canvas.height - 10);
 
                 requestAnimationFrame(animate);
             }
