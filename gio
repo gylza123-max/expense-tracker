@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; }
+
+.page {
+  width: 210mm; height: 297mm;
+  page-break-after: always;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ── DECORATIVE BLOBS ── */
+.blob {
+  position: absolute; border-radius: 50%;
+  opacity: 0.15; pointer-events: none; z-index: 0;
+}
+
+/* ── PAGE HEADER ── */
+.pg-header {
+  padding: 16px 24px 14px;
+  text-align: center;
+  color: white;
+  font-size: 21px; font-weight: 900;
+  border-radius: 0 0 30px 30px;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+
+/* ── PAGE BODY ── */
+.pg-body {
+  flex: 1;
+  padding: 14px 18px 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative; z-index: 1;
+}
+
+/* ── CARDS ── */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 12px 15px;
+  border: 2.5px solid;
+  box-shadow: 3px 3px 0px;
+}
+
+/* ── GRIDS ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.flex-row { display: flex; gap: 12px; }
+.col { flex: 1; }
+
+/* ── STEP ITEMS ── */
+.step {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: white; border-radius: 14px;
+  padding: 11px 14px; border: 2.5px solid;
+  box-shadow: 3px 3px 0px;
+  flex-shrink: 0;
+}
+.step-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900; color: white;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step h4 { font-size: 14px; font-weight: 900; margin-bottom: 4px; }
+.step ul { font-size: 11.5px; color: #37474F; padding-left: 14px; line-height: 1.8; }
+
+/* ── SCHEDULE ── */
+.srow {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #E0E0E0;
+  font-size: 11.5px;
+}
+.srow:last-child { border-bottom: none; }
+.stime {
+  font-size: 11px; font-weight: 900;
+  border-radius: 8px; padding: 3px 8px;
+  min-width: 62px; text-align: center; flex-shrink: 0;
+}
+
+/* ── FOOD ITEMS ── */
+.fitem {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: white; border-radius: 10px;
+  padding: 7px 9px; margin-bottom: 6px;
+}
+.fitem .ico { font-size: 20px; flex-shrink: 0; line-height: 1.2; }
+.fitem b { display: block; font-size: 12px; color: #1A1A1A; }
+.fitem span { font-size: 11px; color: #546E7A; }
+
+/* ── COMIC ── */
+.comic-panel {
+  background: white; border-radius: 14px;
+  border: 3px solid; padding: 10px 10px 8px;
+  box-shadow: 4px 4px 0px;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.panel-badge {
+  position: absolute; top: -10px; left: 10px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #FFE066; border: 2px solid #F97316;
+  font-size: 12px; font-weight: 900; color: #1A1A1A;
+  display: flex; align-items: center; justify-content: center;
+}
+.speech {
+  background: white; border: 2px solid;
+  border-radius: 12px; padding: 6px 9px;
+  font-size: 10px; line-height: 1.4; color: #1A1A1A;
+}
+.panel-caption {
+  border-radius: 8px; padding: 5px;
+  text-align: center; font-size: 11px; font-weight: 900;
+  margin-top: 6px; flex-shrink: 0;
+}
+
+/* ── INFO BAR ── */
+.info-bar {
+  background: linear-gradient(135deg, #FFE066, #FFB347);
+  border-radius: 14px; padding: 11px 15px;
+  text-align: center; font-size: 12.5px; font-weight: bold;
+  border: 2px solid #F97316; color: #1A1A1A;
+  flex-shrink: 0;
+}
+
+/* ── FOOTER ── */
+.footer {
+  background: #ECEFF1; padding: 9px;
+  text-align: center; font-size: 10px; color: #607D8B;
+  flex-shrink: 0; z-index: 1; position: relative;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     HALAMAN 1 — COVER
+     GiO muncul HANYA di sini, besar & jelas
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(160deg,#E0F7FA 0%,#FCE4EC 50%,#E8F5E9 100%);">
+
+  <!-- centre: GiO maskot FULL -->
+  <div style="flex:1;display:flex;flex-direction:column;
+              align-items:center;justify-content:center;gap:12px;padding:8px 16px;">
+
+    <!-- GiO Mascot Terbaru — tampil full besar -->
+    <img src="gio_mascot.png"
+         style="width:390px;height:390px;object-fit:contain;" />
+
+    <!-- tagline box -->
+    <div style="background:white;border-radius:20px;padding:12px 26px;
+                text-align:center;border:3px solid #4CAF50;
+                box-shadow:4px 4px 0px #C8E6C9;max-width:420px;">
+      <div style="font-size:17px;font-weight:900;color:#E91E63;margin-bottom:5px;">
+        🦷 Petualangan Melawan Kuman Jahat! 🦷
+      </div>
+      <div style="font-size:12.5px;color:#37474F;line-height:1.6;">
+        Panduan menjaga kesehatan gigi yang seru<br/>
+        untuk anak usia <strong>10 – 15 tahun</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom strip -->
+  <div style="background:linear-gradient(90deg,#E91E63,#F06292);
+              padding:20px;text-align:center;color:white;
+              font-size:17px;font-weight:900;letter-spacing:2px;
+              border-radius:40px 40px 0 0;flex-shrink:0;">
+    🌟 &nbsp; I ♥ GiO DENTAL &nbsp; 🌟
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 2 — SIAPA GiO?
+     TIDAK ada maskot, hanya ikon emoji
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#FFF8F0,#FFF0F8);">
+  <div class="blob" style="width:120px;height:120px;background:#FF6B6B;top:90px;right:-35px;"></div>
+  <div class="blob" style="width:90px;height:90px;background:#FFE066;bottom:80px;left:-22px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#FF6B6B,#FF8E53);">
+    🌟 Siapa GiO? Kenalan Dulu Yuk! 🌟
+  </div>
+
+  <div class="pg-body">
+    <div class="card" style="border-color:#FF6B6B;box-shadow:4px 4px 0px #FFB3A0;">
+      <div style="font-size:16px;font-weight:900;color:#FF6B6B;margin-bottom:8px;">👋 Halo! Aku GiO!</div>
+      <p style="font-size:12.5px;color:#37474F;line-height:1.85;">
+        GiO adalah maskot resmi <strong>GiO Dental</strong> yang super keren dan penuh semangat!
+        Dengan senyum bersih berkilau, GiO siap jadi temanmu dalam menjaga kesehatan gigi
+        setiap hari. GiO percaya bahwa <strong style="color:#E91E63;">gigi sehat = senyum keren
+        = kepercayaan diri yang tinggi!</strong> 💪
+      </p>
+    </div>
+
+    <div style="font-size:14px;font-weight:900;color:#FF8E53;">⚡ KEKUATAN SUPER GiO ⚡</div>
+
+    <div class="grid2" style="flex:1;">
+      <div class="card" style="border-color:#4ECDC4;box-shadow:3px 3px 0px #96CEB4;text-align:center;padding:16px 10px;">
+        <div style="font-size:32px;">🧹</div>
+        <div style="font-weight:900;font-size:13px;color:#00838F;margin:6px 0 4px;">Sikat Ajaib</div>
+        <div style="font-size:11px;color:#546E7A;">Bersihkan 99.9% kuman dalam 2 menit!</div>
+      </div>
+      <div class="card" style="border-color:#8B5CF6;box-shadow:3px 3px 0px #C4B5FD;text-align:center;padding:16px 10px;">
+        <div style="font-size:32px;">🛡️</div>
+        <div style="font-weight:900;font-size:13px;color:#6D28D9;margin:6px 0 4px;">Perisai Enamel</div>
+        <div style="font-size:11px;color:#546E7A;">Lapisan fluoride anti-kuman super kuat!</div>
+      </div>
+      <div class="card" style="border-color:#F97316;box-shadow:3px 3px 0px #FED7AA;text-align:center;padding:16px 10px;">
+        <div style="font-size:32px;">✨</div>
+        <div style="font-weight:900;font-size:13px;color:#C2410C;margin:6px 0 4px;">Senyum Kilat</div>
+        <div style="font-size:11px;color:#546E7A;">Usir kuman dengan senyum berkilau!</div>
+      </div>
+      <div class="card" style="border-color:#22C55E;box-shadow:3px 3px 0px #86EFAC;text-align:center;padding:16px 10px;">
+        <div style="font-size:32px;">💦</div>
+        <div style="font-weight:900;font-size:13px;color:#15803D;margin:6px 0 4px;">Air Suci</div>
+        <div style="font-size:11px;color:#546E7A;">Bilas bersih hingga sempurna!</div>
+      </div>
+    </div>
+
+    <div class="info-bar">
+      ⭐ "Gigi Sehat = Hidup Sehat = Senyum Paling Keren!" ⭐<br/>
+      <span style="font-size:11px;font-style:italic;font-weight:normal;">— GiO, Maskot GiO Dental —</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 3 — MUSUH-MUSUH
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#FDF4FF,#F0F4FF);">
+  <div class="blob" style="width:110px;height:110px;background:#8B5CF6;top:100px;left:-28px;"></div>
+  <div class="blob" style="width:85px;height:85px;background:#EF4444;bottom:90px;right:-22px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#8B5CF6,#6366F1);">
+    ☠️ Waspada! Musuh-Musuh GiO! ☠️
+  </div>
+
+  <div class="pg-body">
+    <p style="text-align:center;font-size:12px;color:#64748B;flex-shrink:0;">
+      Ada ribuan kuman jahat bersembunyi di mulutmu. Kenali mereka agar GiO bisa melawan! 🔍
+    </p>
+
+    <div class="grid2" style="flex:1;">
+      <div class="card" style="border-color:#7C3AED;box-shadow:4px 4px 0px #C4B5FD;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:34px;">🦠</span>
+          <strong style="font-size:13px;color:#7C3AED;">Strep-si Si Jahat</strong>
+        </div>
+        <p style="font-size:11.5px;color:#37474F;line-height:1.7;">
+          Kuman paling berbahaya! Suka makan gula di gigimu lalu menghasilkan
+          <strong>ASAM</strong> yang merusak enamel secara perlahan. 😈
+        </p>
+      </div>
+
+      <div class="card" style="border-color:#DC2626;box-shadow:4px 4px 0px #FCA5A5;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:34px;">🍬</span>
+          <strong style="font-size:13px;color:#DC2626;">Gula-Gula Monster</strong>
+        </div>
+        <p style="font-size:11.5px;color:#37474F;line-height:1.7;">
+          Bukan kuman asli, tapi amunisi kuman! Makin banyak gula yang kamu makan,
+          kuman makin kuat dan ganas. 💣
+        </p>
+      </div>
+
+      <div class="card" style="border-color:#92400E;box-shadow:4px 4px 0px #FCD34D;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:34px;">🟤</span>
+          <strong style="font-size:13px;color:#92400E;">Pak Plak</strong>
+        </div>
+        <p style="font-size:11.5px;color:#37474F;line-height:1.7;">
+          Lapisan lengket kuning-coklat yang menempel diam-diam di gigi.
+          Tempat persembunyian favorit kuman. Harus dibasmi tiap hari! 🧹
+        </p>
+      </div>
+
+      <div class="card" style="border-color:#1E40AF;box-shadow:4px 4px 0px #93C5FD;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:34px;">🪨</span>
+          <strong style="font-size:13px;color:#1E40AF;">Karang Si Keras</strong>
+        </div>
+        <p style="font-size:11.5px;color:#37474F;line-height:1.7;">
+          Plak yang dibiarkan hingga mengeras jadi batu! Tidak bisa dibersihkan sendiri —
+          butuh dokter gigi! 🏥
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:#EF4444;box-shadow:3px 3px 0px #FCA5A5;
+                             background:#FFF1F2;text-align:center;padding:10px 14px;flex-shrink:0;">
+      <span style="font-size:13px;font-weight:900;color:#EF4444;">⚠️ AKIBAT SERANGAN KUMAN:</span><br/>
+      <span style="font-size:12px;color:#37474F;">
+        Gigi berlubang 🕳️ &nbsp;·&nbsp; Bau mulut 💨 &nbsp;·&nbsp; Gusi bengkak 🔴 &nbsp;·&nbsp; Sakit gigi 😣
+      </span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 4 — SENJATA RAHASIA
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#F0FFF4,#EFF6FF);">
+  <div class="blob" style="width:110px;height:110px;background:#22C55E;top:110px;right:-28px;"></div>
+  <div class="blob" style="width:85px;height:85px;background:#3B82F6;bottom:90px;left:-20px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#22C55E,#10B981);">
+    ⚔️ Senjata Rahasia GiO Melawan Kuman! ⚔️
+  </div>
+
+  <div class="pg-body">
+    <div class="step" style="border-color:#22C55E;box-shadow:3px 3px 0px #86EFAC;">
+      <div class="step-num" style="background:#22C55E;">1</div>
+      <div>
+        <h4 style="color:#15803D;">🪥 SENJATA #1: Sikat Gigi!</h4>
+        <ul>
+          <li>Sikat 2x sehari: pagi setelah sarapan &amp; malam sebelum tidur</li>
+          <li>Minimal <strong>2 MENIT</strong> — set timer di HPmu!</li>
+          <li>Gerakan melingkar kecil, jangan terlalu keras</li>
+          <li>Ganti sikat gigi setiap <strong>3 bulan</strong> sekali</li>
+          <li>Jangan lupa sikat lidah juga! 👅</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step" style="border-color:#3B82F6;box-shadow:3px 3px 0px #93C5FD;">
+      <div class="step-num" style="background:#3B82F6;">2</div>
+      <div>
+        <h4 style="color:#1D4ED8;">💙 SENJATA #2: Pasta Gigi Fluoride!</h4>
+        <ul>
+          <li>Fluoride = perisai yang memperkuat enamel gigimu!</li>
+          <li>Pakai sebesar biji kacang polong saja</li>
+          <li>Setelah sikat, kumur dan buang — jangan ditelan!</li>
+          <li>Terbukti ilmiah mencegah gigi berlubang ✅</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step" style="border-color:#EC4899;box-shadow:3px 3px 0px #F9A8D4;">
+      <div class="step-num" style="background:#EC4899;">3</div>
+      <div>
+        <h4 style="color:#BE185D;">🧵 SENJATA #3: Benang Gigi (Floss)!</h4>
+        <ul>
+          <li>Sikat gigi tidak bisa masuk celah sempit antar gigi!</li>
+          <li>Floss 1x sehari, idealnya malam sebelum tidur</li>
+          <li>Gerakan C-shape mengikuti bentuk gigimu</li>
+          <li>Ini rahasia gigi bersih yang sempurna! 🤫</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-bar">
+      💡 <strong>TAHUKAH KAMU?</strong> Dalam 2 menit sikat gigi, jutaan kuman bisa dibasmi!<br/>
+      <span style="font-size:11.5px;font-weight:normal;">Jangan beri kuman kesempatan — sikat sekarang juga! ⏱️</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 5 — MAKANAN
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#FFFBEB,#FFF0F8);">
+  <div class="blob" style="width:100px;height:100px;background:#F97316;top:100px;left:-25px;"></div>
+  <div class="blob" style="width:85px;height:85px;background:#22C55E;bottom:80px;right:-20px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#F97316,#EF4444);">
+    🍎 Makanan Sahabat &amp; Musuh Gigi! 🍭
+  </div>
+
+  <div class="pg-body">
+    <div class="flex-row" style="flex:1;">
+
+      <!-- GOOD FOOD -->
+      <div class="col" style="background:#F0FFF4;border-radius:16px;padding:10px;border:2.5px solid #22C55E;">
+        <div style="background:#22C55E;color:white;border-radius:10px;padding:6px;
+                    text-align:center;font-weight:900;font-size:13px;margin-bottom:8px;">
+          😊 SAHABAT GIGI
+        </div>
+        <div class="fitem"><span class="ico">🧀</span><div><b>Keju &amp; Susu</b><span>Kalsium untuk gigi kuat!</span></div></div>
+        <div class="fitem"><span class="ico">🥕</span><div><b>Wortel &amp; Seledri</b><span>Bersihkan plak secara alami!</span></div></div>
+        <div class="fitem"><span class="ico">🍎</span><div><b>Apel &amp; Pir</b><span>Produksi air liur pembersih!</span></div></div>
+        <div class="fitem"><span class="ico">🥦</span><div><b>Brokoli</b><span>Vitamin K untuk gusi sehat!</span></div></div>
+        <div class="fitem"><span class="ico">💧</span><div><b>Air Putih</b><span>Pembersih terbaik, 8 gelas/hari!</span></div></div>
+        <div class="fitem"><span class="ico">🥚</span><div><b>Telur &amp; Ikan</b><span>Fosfor perkuat enamel!</span></div></div>
+      </div>
+
+      <!-- BAD FOOD -->
+      <div class="col" style="background:#FFF1F2;border-radius:16px;padding:10px;border:2.5px solid #EF4444;">
+        <div style="background:#EF4444;color:white;border-radius:10px;padding:6px;
+                    text-align:center;font-weight:900;font-size:13px;margin-bottom:8px;">
+          😡 MUSUH GIGI
+        </div>
+        <div class="fitem"><span class="ico">🍬</span><div><b>Permen &amp; Coklat</b><span>Gula = surga kuman jahat!</span></div></div>
+        <div class="fitem"><span class="ico">🥤</span><div><b>Minuman Manis</b><span>Soda &amp; jus kemasan berbahaya!</span></div></div>
+        <div class="fitem"><span class="ico">🍟</span><div><b>Keripik &amp; Junk Food</b><span>Lengket di gigi, susah bersih!</span></div></div>
+        <div class="fitem"><span class="ico">🧃</span><div><b>Minuman Asam</b><span>Erosi enamel gigimu perlahan!</span></div></div>
+        <div class="fitem"><span class="ico">🍰</span><div><b>Kue &amp; Roti Manis</b><span>Tepung berubah gula di mulut!</span></div></div>
+        <div class="fitem"><span class="ico">🍭</span><div><b>Lollipop</b><span>Kontak lama = bahaya besar!</span></div></div>
+      </div>
+    </div>
+
+    <div class="info-bar">
+      💡 Setelah makan manis, segera minum air putih dan sikat gigi! 🦷
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 6 — KOMIK
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#F5F3FF,#EFF6FF);">
+  <div class="blob" style="width:110px;height:110px;background:#8B5CF6;top:110px;right:-28px;"></div>
+  <div class="blob" style="width:85px;height:85px;background:#3B82F6;bottom:90px;left:-20px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#8B5CF6,#3B82F6);">
+    📖 Petualangan GiO: Malam Paling Gelap!
+  </div>
+
+  <div class="pg-body">
+    <div class="grid2" style="flex:1;">
+
+      <!-- Panel 1 -->
+      <div class="comic-panel" style="border-color:#FF6B6B;box-shadow:4px 4px 0px #FCA5A5;">
+        <div class="panel-badge">1</div>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:8px;flex:1;">
+          <div style="font-size:55px;line-height:1;">🦷</div>
+          <div class="speech" style="border-color:#FF6B6B;">
+            Malam ini aku harus berjaga! Kuman mengancam! 🌙
+          </div>
+        </div>
+        <div class="panel-caption" style="background:#FFE4E6;color:#EF4444;">
+          GiO berjaga-jaga...
+        </div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="comic-panel" style="border-color:#8B5CF6;box-shadow:4px 4px 0px #C4B5FD;">
+        <div class="panel-badge">2</div>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:8px;flex:1;">
+          <div style="font-size:40px;line-height:1.3;">🦠<br/>😈<br/>🦠</div>
+          <div class="speech" style="border-color:#8B5CF6;font-size:9.5px;">
+            Hahaha! Kami datang! Kamu tidak sikat gigi! 😜
+          </div>
+        </div>
+        <div class="panel-caption" style="background:#EDE9FE;color:#8B5CF6;">
+          Pasukan kuman menyerang!
+        </div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div class="comic-panel" style="border-color:#22C55E;box-shadow:4px 4px 0px #86EFAC;">
+        <div class="panel-badge">3</div>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:8px;flex:1;">
+          <div style="text-align:center;">
+            <div style="font-size:44px;">🪥</div>
+            <div style="font-size:20px;font-weight:900;color:#22C55E;text-shadow:1px 1px 0 #15803D;">
+              SIKAT!!!
+            </div>
+            <div style="font-size:20px;">⚡✨</div>
+          </div>
+          <div class="speech" style="border-color:#22C55E;font-size:9.5px;">
+            Rasakan sikat ajaibku! Kalian tidak akan lolos! 💪
+          </div>
+        </div>
+        <div class="panel-caption" style="background:#DCFCE7;color:#15803D;">
+          GiO keluarkan senjata rahasia!
+        </div>
+      </div>
+
+      <!-- Panel 4 -->
+      <div class="comic-panel" style="border-color:#F97316;box-shadow:4px 4px 0px #FED7AA;">
+        <div class="panel-badge">4</div>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:8px;flex:1;">
+          <div style="font-size:38px;line-height:1.4;">😵‍💫<br/>💀💀<br/>😵</div>
+          <div class="speech" style="border-color:#F97316;font-size:9.5px;">
+            Yeay! Gigi bersih! Kuman kalah semua! 🎉🌟
+          </div>
+        </div>
+        <div class="panel-caption" style="background:#FFF7ED;color:#EA580C;">
+          GiO menang! Gigi bersih berkilau! ✨
+        </div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(90deg,#8B5CF6,#3B82F6);border-radius:12px;
+                padding:11px;text-align:center;color:white;font-size:12.5px;
+                font-weight:bold;flex-shrink:0;">
+      💜 Sikat gigimu setiap malam sebelum tidur — itu caramu membantu GiO! 🦷
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 7 — JADWAL HARIAN
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#EFF6FF,#F5F3FF);">
+  <div class="blob" style="width:110px;height:110px;background:#3B82F6;top:110px;right:-28px;"></div>
+  <div class="blob" style="width:85px;height:85px;background:#6366F1;bottom:90px;left:-20px;"></div>
+
+  <div class="pg-header" style="background:linear-gradient(90deg,#3B82F6,#6366F1);">
+    📅 Jadwal Harian Pahlawan Gigi!
+  </div>
+
+  <div class="pg-body">
+
+    <div class="card" style="border-color:#F59E0B;box-shadow:4px 4px 0px #FDE68A;padding:12px 15px;">
+      <div style="display:inline-block;background:linear-gradient(90deg,#F59E0B,#F97316);
+                  color:white;border-radius:10px;padding:5px 14px;
+                  font-weight:900;font-size:14px;margin-bottom:10px;">
+        ☀️ RUTINITAS PAGI
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#FEF3C7;color:#B45309;">06:30</span>
+        <span>💧 Bangun tidur — langsung minum segelas air putih</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#FEF3C7;color:#B45309;">07:00</span>
+        <span>🍽️ Sarapan bergizi (hindari yang terlalu manis!)</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#FEF3C7;color:#B45309;">07:20</span>
+        <span>🪥 <strong>SIKAT GIGI 2 menit</strong> + pasta fluoride = WAJIB!</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#FEF3C7;color:#B45309;">07:25</span>
+        <span>🧵 Floss antar gigi — bersihkan celah tersembunyi</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#FEF3C7;color:#B45309;">07:28</span>
+        <span>🫧 Kumur mouthwash — perlindungan ekstra!</span>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:#6366F1;box-shadow:4px 4px 0px #A5B4FC;padding:12px 15px;">
+      <div style="display:inline-block;background:linear-gradient(90deg,#6366F1,#8B5CF6);
+                  color:white;border-radius:10px;padding:5px 14px;
+                  font-weight:900;font-size:14px;margin-bottom:10px;">
+        🌙 RUTINITAS MALAM
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#EEF2FF;color:#4338CA;">19:00</span>
+        <span>🍽️ Makan malam — jangan ngemil manis setelahnya!</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#EEF2FF;color:#4338CA;">20:30</span>
+        <span>🧵 Floss dulu sebelum sikat gigi — ini rahasianya!</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#EEF2FF;color:#4338CA;">20:35</span>
+        <span>🪥 <strong>SIKAT GIGI 2 menit</strong> — ini yang paling penting!</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#EEF2FF;color:#4338CA;">20:40</span>
+        <span>🫧 Kumur mouthwash untuk perlindungan semalaman</span>
+      </div>
+      <div class="srow">
+        <span class="stime" style="background:#EEF2FF;color:#4338CA;">21:00</span>
+        <span>🚫 Tidak makan/minum apa pun selain air putih!</span>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:#22C55E;box-shadow:3px 3px 0px #86EFAC;
+                             background:#F0FFF4;text-align:center;padding:10px;flex-shrink:0;">
+      <span style="font-size:13px;font-weight:900;color:#15803D;">🗓️ SETIAP 6 BULAN SEKALI:</span><br/>
+      <span style="font-size:12px;color:#37474F;">Kunjungi dokter gigi GiO Dental untuk pemeriksaan rutin! 🦷✨</span>
+    </div>
+
+    <div class="info-bar">
+      🏆 <strong>TANTANGAN GiO:</strong> Sikat gigi 2x sehari tanpa bolong selama 30 hari! 💪
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     HALAMAN 8 — PENUTUP
+════════════════════════════════════ -->
+<div class="page" style="background:linear-gradient(145deg,#FFFBEB,#FFF0F8,#EFF6FF);">
+  <div class="blob" style="width:110px;height:110px;background:#4ECDC4;top:100px;left:-28px;"></div>
+  <div class="blob" style="width:90px;height:90px;background:#EC4899;bottom:110px;right:-22px;"></div>
+
+  <div style="background:linear-gradient(90deg,#1E293B,#334155);padding:22px 20px;
+              text-align:center;border-radius:0 0 30px 30px;flex-shrink:0;z-index:1;position:relative;">
+    <div style="font-size:24px;font-weight:900;color:white;">🌟 Jadilah Pahlawan Gigimu Sendiri! 🌟</div>
+    <div style="font-size:13px;color:#94A3B8;margin-top:4px;">Pesan istimewa dari GiO untukmu...</div>
+  </div>
+
+  <div class="pg-body" style="gap:14px;">
+
+    <!-- Big tooth icon as closing visual -->
+    <div style="text-align:center;font-size:80px;line-height:1;flex-shrink:0;">🦷</div>
+
+    <div style="background:white;border-radius:16px;padding:16px 20px;
+                border:3px solid #00BCD4;box-shadow:4px 4px 0px #80DEEA;
+                font-size:12.5px;color:#1A1A1A;line-height:1.9;text-align:center;">
+      <strong style="font-size:16px;color:#00ACC1;">Hei, kamu yang sedang membaca ini! 👋</strong><br/><br/>
+      Kamu sudah tahu — gigi sehatmu adalah tanggung jawabmu sendiri.<br/>
+      Aku, GiO, selalu siap berjuang melawan kuman-kuman jahat.<br/>
+      Tapi aku butuh <strong style="color:#E91E63;">BANTUANMU!</strong> 🤝<br/>
+      Sikat gigimu, pakai floss, makan sehat, dan periksa ke dokter rutin!<br/><br/>
+      <strong style="color:#FF6B6B;font-size:15px;">Senyum Sehat = Percaya Diri Keren! ✨</strong><br/>
+      <em style="font-size:12px;color:#90A4AE;">— Dengan Penuh Semangat, GiO 🦷💪 —</em>
+    </div>
+
+    <div style="background:#EFF6FF;border-radius:14px;padding:14px 16px;border:2px solid #1565C0;">
+      <div style="color:#1565C0;font-size:14px;font-weight:900;margin-bottom:10px;">📋 Janjiku Kepada GiO:</div>
+      <div style="font-size:12.5px;color:#1A1A1A;margin-bottom:7px;">
+        ☐ &nbsp; Aku akan sikat gigi 2x sehari dengan sungguh-sungguh
+      </div>
+      <div style="font-size:12.5px;color:#1A1A1A;margin-bottom:7px;">
+        ☐ &nbsp; Aku akan kurangi makanan dan minuman manis
+      </div>
+      <div style="font-size:12.5px;color:#1A1A1A;">
+        ☐ &nbsp; Aku akan periksa ke dokter gigi GiO Dental setiap 6 bulan
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Disiapkan dengan penuh kasih sayang oleh Tim GiO Dental 🦷 &nbsp;|&nbsp; I ♥ GiO DENTAL
+  </div>
+</div>
+
+</body>
+</html>
