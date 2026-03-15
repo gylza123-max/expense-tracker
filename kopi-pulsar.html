@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Seduhan Kopi Pulsar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #5C2E10 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #8B4513;
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: #5C2E10;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #8B4513;
+            font-size: 0.9em;
+        }
+
+        .specs {
+            background: #F5E6D3;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #8B4513;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .spec-item {
+            color: #5C2E10;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #8B4513;
+        }
+
+        .timer-section {
+            background: linear-gradient(135deg, #8B4513 0%, #5C2E10 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timer-display {
+            font-size: 3.5em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            margin-bottom: 20px;
+        }
+
+        .step {
+            background: #F5E6D3;
+            border-left: 4px solid #D2691E;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            background: #E8DACC;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step.active {
+            background: #8B4513;
+            color: white;
+            border-left-color: #FFD700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-number {
+            font-weight: 600;
+            color: #D2691E;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .step.active .step-number {
+            color: #FFD700;
+        }
+
+        .step-time {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .step.active .step-time {
+            opacity: 1;
+        }
+
+        .step-content {
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .btn-start {
+            background: #8B4513;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-start:hover {
+            background: #5C2E10;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: #D2691E;
+            color: white;
+        }
+
+        .btn-next {
+            background: #FF8C00;
+            color: white;
+        }
+
+        .btn-reset:hover, .btn-next:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .note {
+            background: #FFF8DC;
+            border-left: 3px solid #FFD700;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #5C2E10;
+        }
+
+        .note strong {
+            color: #8B4513;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.4em;
+            }
+
+            .timer-display {
+                font-size: 2.5em;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☕ Panduan Seduhan Kopi</h1>
+            <p class="subtitle">Nextlevel Pulsar Dripper</p>
+        </header>
+
+        <div class="specs">
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Dosis Kopi:</span> 15g
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Air:</span> 255g
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Rasio:</span> 1:17
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Grind:</span> 600µm
+                </div>
+            </div>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer-label" id="currentStep">Siap untuk mulai</div>
+            <div class="timer-display" id="timer">0:00</div>
+            <div style="font-size: 0.9em; opacity: 0.8;">Total waktu: 3:30</div>
+        </div>
+
+        <div class="steps" id="stepsContainer"></div>
+
+        <div class="buttons">
+            <button class="btn-reset" onclick="resetTimer()">🔄 Reset</button>
+            <button class="btn-start" id="startBtn" onclick="toggleTimer()">▶️ Mulai</button>
+        </div>
+
+        <div class="note">
+            <strong>💡 Tips:</strong><br>
+            • Perhatikan suara alarm untuk setiap tahap<br>
+            • Gunakan timbangan untuk akurasi maksimal<br>
+            • Swirl dengan lembut untuk distribusi air merata
+        </div>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                time: "0:00",
+                title: "Persiapan Setup",
+                content: "Tutup valve | Tempatkan filter | Basahi filter & drain base | Tutup valve / masukkan barrel | Tambah & level kopi | Tempatkan dispersi cap | Tare skala",
+                color: "#E8DACC"
+            },
+            {
+                time: "0:00 - 0:30",
+                title: "Bloom Phase",
+                content: "Tuangkan 60g air ke dalam dripper (4x dosis) | Lakukan WWDT (Weiss Weight Distribution Technique) + Swirl | Tunggu 30 detik untuk blooming air dan kopi tercampur",
+                color: "#F5E6D3"
+            },
+            {
+                time: "0:30",
+                title: "Tahap Pertama",
+                content: "Tutup valve | Tuangkan air hingga 166g (65% dari total) | Lakukan swirl lembut | Buka valve valve antara jam 1-2 o'clock",
+                color: "#F5E6D3"
+            },
+            {
+                time: "1:00 - 2:00",
+                title: "Tahap Penuangan Utama",
+                content: "Tunggu hingga air mulai habis di dripper | Sebelum bedding benar-benar kosong, tutup valve | Tuangkan air sisa hingga mencapai total 255g (target akhir)",
+                color: "#F5E6D3"
+            },
+            {
+                time: "2:00 - 3:30",
+                title: "Tahap Akhir",
+                content: "Lakukan swirl | Buka valve ke posisi yang sama (1-2 o'clock) | Tunggu proses menyaring selesai | Total waktu brewing: ~3:30 menit",
+                color: "#E8DACC"
+            },
+            {
+                time: "3:30",
+                title: "Selesai ✓",
+                content: "Kopi siap disajikan! Nikmati seduhan kopi Anda dengan sempurna.",
+                color: "#F5E6D3"
+            }
+        ];
+
+        let currentStep = 0;
+        let timeLeft = 0;
+        let isRunning = false;
+        let timerInterval = null;
+        let totalSeconds = 210; // 3:30
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+            steps.forEach((step, idx) => {
+                const stepEl = document.createElement('div');
+                stepEl.className = 'step' + (idx === currentStep && isRunning ? ' active' : '');
+                stepEl.onclick = () => selectStep(idx);
+                stepEl.innerHTML = `
+                    <div class="step-number">Langkah ${idx + 1}</div>
+                    <div class="step-time">⏱️ ${step.time}</div>
+                    <div class="step-content">${step.content}</div>
+                `;
+                container.appendChild(stepEl);
+            });
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+            document.getElementById('currentStep').textContent = isRunning ? steps[currentStep].title : 'Siap untuk mulai';
+        }
+
+        function selectStep(idx) {
+            currentStep = idx;
+            timeLeft = getStepStartTime(idx);
+            renderSteps();
+            updateDisplay();
+        }
+
+        function getStepStartTime(idx) {
+            const stepTimes = [0, 0, 30, 60, 120, 210];
+            return stepTimes[idx];
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                document.getElementById('startBtn').textContent = '▶️ Lanjut';
+                isRunning = false;
+            } else {
+                document.getElementById('startBtn').textContent = '⏸️ Pause';
+                isRunning = true;
+
+                if (timeLeft === 0 && currentStep === 0) {
+                    timeLeft = 0;
+                }
+
+                timerInterval = setInterval(() => {
+                    timeLeft++;
+                    
+                    // Update step based on time
+                    if (timeLeft < 30) currentStep = 1;
+                    else if (timeLeft < 60) currentStep = 2;
+                    else if (timeLeft < 120) currentStep = 3;
+                    else if (timeLeft < 210) currentStep = 4;
+                    else {
+                        currentStep = 5;
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        document.getElementById('startBtn').textContent = '✓ Selesai!';
+                        playSound();
+                    }
+
+                    renderSteps();
+                    updateDisplay();
+                }, 1000);
+            }
+            renderSteps();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 0;
+            currentStep = 0;
+            isRunning = false;
+            document.getElementById('startBtn').textContent = '▶️ Mulai';
+            renderSteps();
+            updateDisplay();
+        }
+
+        function playSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.value = 800;
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.5);
+        }
+
+        renderSteps();
+        updateDisplay();
+    </script>
+</body>
+</html>
