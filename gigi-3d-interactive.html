@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model 3D Gigi Interaktif</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .canvas-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 500px;
+            display: block;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            z-index: 10;
+        }
+
+        .control-item {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .info-section h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .tooth-details {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tooth-details h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tooth-details p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .problem-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .problem-list li {
+            padding: 8px;
+            margin: 5px 0;
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            border-radius: 5px;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .treatment-box {
+            background: #d4edda;
+            border-left: 3px solid #28a745;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .treatment-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .treatment-box p {
+            color: #155724;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .tooth-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .tooth-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .tooth-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .tooth-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="canvas-section">
+            <canvas id="canvas"></canvas>
+            <div class="controls">
+                <div class="control-item">🖱️ Drag: Rotasi</div>
+                <div class="control-item">🔍 Scroll: Zoom</div>
+                <div class="control-item">Klik gigi: Info detail</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h1>📋 Identifikasi Gigi</h1>
+            
+            <div class="tooth-selector" id="toothSelector">
+                <button class="tooth-btn" onclick="selectTooth(1)">Gigi 1</button>
+                <button class="tooth-btn" onclick="selectTooth(2)">Gigi 2</button>
+                <button class="tooth-btn" onclick="selectTooth(3)">Gigi 3</button>
+                <button class="tooth-btn" onclick="selectTooth(4)">Gigi 4</button>
+                <button class="tooth-btn" onclick="selectTooth(5)">Gigi 5</button>
+                <button class="tooth-btn" onclick="selectTooth(6)">Gigi 6</button>
+                <button class="tooth-btn" onclick="selectTooth(7)">Gigi 7</button>
+                <button class="tooth-btn" onclick="selectTooth(8)">Gigi 8</button>
+            </div>
+
+            <div class="tooth-details" id="toothInfo">
+                <h3>Pilih gigi untuk melihat detail</h3>
+                <p>Gunakan mouse untuk merotasi model 3D atau pilih gigi dari tombol di atas.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toothData = {
+            1: {
+                name: "Gigi Seri Pertama Atas (Central Incisor)",
+                position: "Rahang atas, posisi tengah",
+                function: "Memotong makanan",
+                commonProblems: ["Karies", "Gigi goyang", "Gusi berdarah"],
+                treatment: "Scaling, tumpatan, atau kerokan akar"
+            },
+            2: {
+                name: "Gigi Seri Kedua Atas (Lateral Incisor)",
+                position: "Rahang atas, sebelah seri pertama",
+                function: "Membantu memotong makanan",
+                commonProblems: ["Karang gigi", "Gigi paling sering rusak", "Diskolorasi"],
+                treatment: "Pembersihan karang, whitening, atau tumpatan"
+            },
+            3: {
+                name: "Gigi Taring Atas (Canine)",
+                position: "Rahang atas, sudut mulut",
+                function: "Merobek makanan",
+                commonProblems: ["Gigi terputar", "Bisa dicabut salah tempat", "Abrasi"],
+                treatment: "Koreksi posisi dengan kawat gigi"
+            },
+            4: {
+                name: "Gigi Geraham Kecil 1 (First Premolar)",
+                position: "Rahang atas, dekat geraham besar",
+                function: "Menggiling makanan",
+                commonProblems: ["Karies interproksimal", "Gusi bengkak", "Resesi gusi"],
+                treatment: "Tumpatan, root canal, atau ekstraksi"
+            },
+            5: {
+                name: "Gigi Geraham Kecil 2 (Second Premolar)",
+                position: "Rahang atas, geraham area",
+                function: "Menggiling makanan",
+                commonProblems: ["Karies dalam", "Pulpitis", "Peradangan pulpa"],
+                treatment: "Tumpatan dalam atau root canal treatment"
+            },
+            6: {
+                name: "Gigi Geraham Besar 1 (First Molar)",
+                position: "Rahang atas, paling dalam",
+                function: "Mengunyah makanan",
+                commonProblems: ["Karies pit dan fissure", "Peradangan pulpa", "Akarnya sering bermasalah"],
+                treatment: "Tumpatan dalam, root canal, atau ekstraksi"
+            },
+            7: {
+                name: "Gigi Geraham Besar 2 (Second Molar)",
+                position: "Rahang atas, paling dalam kedua",
+                function: "Mengunyah makanan",
+                commonProblems: ["Impaksi, Karies", "Peradangan", "Kelainan bentuk"],
+                treatment: "Ekstraksi atau root canal"
+            },
+            8: {
+                name: "Gigi Bungsu (Wisdom Tooth/Third Molar)",
+                position: "Rahang atas, belakang sekali",
+                function: "Mengunyah makanan (jarang berfungsi optimal)",
+                commonProblems: ["Impaksi", "Infeksi", "Tidak ada ruang", "Sulit dibersihkan"],
+                treatment: "Ekstraksi karena jarang berguna"
+            }
+        };
+
+        let selectedTooth = null;
+
+        class ToothVisualizer {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    this.canvas.clientWidth / this.canvas.clientHeight,
+                    0.1,
+                    1000
+                );
+                this.renderer = new THREE.WebGLRenderer({ 
+                    canvas: this.canvas,
+                    antialias: true,
+                    alpha: true 
+                });
+                
+                this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+                this.renderer.setClearColor(0xf0f0f0);
+                
+                this.scene.background = new THREE.Color(0xf5f5f5);
+                this.camera.position.z = 5;
+
+                // Lighting
+                const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
+                light1.position.set(5, 10, 7);
+                this.scene.add(light1);
+
+                const light2 = new THREE.DirectionalLight(0xffffff, 0.4);
+                light2.position.set(-5, -10, -7);
+                this.scene.add(light2);
+
+                this.teeth = [];
+                this.createTeeth();
+                this.setupControls();
+                this.animate();
+            }
+
+            createTeeth() {
+                const positions = [
+                    [-2.5, 0, 0], [-1.5, 0, 0], [-0.5, 0, 0], [0.5, 0, 0],
+                    [1.5, 0, 0], [2.5, 0, 0], [3.5, 0, 0], [4.5, 0, 0]
+                ];
+
+                positions.forEach((pos, idx) => {
+                    const tooth = this.createToothGeometry(pos, idx + 1);
+                    this.scene.add(tooth);
+                    this.teeth.push(tooth);
+                });
+            }
+
+            createToothGeometry(position, id) {
+                const geometry = new THREE.ConeGeometry(0.35, 0.8, 32);
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0xfff8f0,
+                    shininess: 100,
+                    side: THREE.DoubleSide
+                });
+                
+                const tooth = new THREE.Mesh(geometry, material);
+                tooth.position.set(position[0], position[1], position[2]);
+                tooth.toothId = id;
+                
+                tooth.addEventListener = function(event, callback) {
+                    if (event === 'click') this.callback = callback;
+                };
+                
+                return tooth;
+            }
+
+            setupControls() {
+                let isDragging = false;
+                let previousMousePosition = { x: 0, y: 0 };
+
+                this.canvas.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    previousMousePosition = { x: e.clientX, y: e.clientY };
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.clientX - previousMousePosition.x;
+                        const deltaY = e.clientY - previousMousePosition.y;
+
+                        this.teeth.forEach(tooth => {
+                            tooth.rotation.y += deltaX * 0.01;
+                            tooth.rotation.x += deltaY * 0.01;
+                        });
+
+                        previousMousePosition = { x: e.clientX, y: e.clientY };
+                    }
+                });
+
+                this.canvas.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    this.camera.position.z += e.deltaY * 0.005;
+                });
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        const visualizer = new ToothVisualizer('canvas');
+
+        function selectTooth(id) {
+            selectedTooth = id;
+            const data = toothData[id];
+            
+            let html = `
+                <h3>${data.name}</h3>
+                <p><strong>Posisi:</strong> ${data.position}</p>
+                <p><strong>Fungsi:</strong> ${data.function}</p>
+                
+                <h4 style="margin-top: 15px; color: #667eea;">Masalah Umum:</h4>
+                <ul class="problem-list">
+                    ${data.commonProblems.map(p => `<li>⚠️ ${p}</li>`).join('')}
+                </ul>
+                
+                <div class="treatment-box">
+                    <h4>💊 Penanganan</h4>
+                    <p>${data.treatment}</p>
+                </div>
+            `;
+            
+            document.getElementById('toothInfo').innerHTML = html;
+            
+            // Update active button
+            document.querySelectorAll('.tooth-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx + 1 === id);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            selectTooth(1); // Default first tooth
+        });
+    </script>
+</body>
+</html>
