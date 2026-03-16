@@ -279,14 +279,23 @@
                 this.scene.background = new THREE.Color(0xf5f5f5);
                 this.camera.position.z = 5;
 
-                // Lighting
-                const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
-                light1.position.set(5, 10, 7);
+                // Lighting lebih bagus
+                const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
+                light1.position.set(8, 15, 10);
+                light1.castShadow = true;
+                light1.shadow.mapSize.width = 2048;
+                light1.shadow.mapSize.height = 2048;
                 this.scene.add(light1);
 
-                const light2 = new THREE.DirectionalLight(0xffffff, 0.4);
-                light2.position.set(-5, -10, -7);
+                const light2 = new THREE.DirectionalLight(0xffffdd, 0.6);
+                light2.position.set(-8, 5, -8);
                 this.scene.add(light2);
+
+                const light3 = new THREE.AmbientLight(0xffffff, 0.5);
+                this.scene.add(light3);
+
+                // Background lebih terang
+                this.scene.background = new THREE.Color(0xfafafa);
 
                 this.teeth = [];
                 this.createTeeth();
@@ -308,22 +317,67 @@
             }
 
             createToothGeometry(position, id) {
-                const geometry = new THREE.ConeGeometry(0.35, 0.8, 32);
-                const material = new THREE.MeshPhongMaterial({
-                    color: 0xfff8f0,
-                    shininess: 100,
+                // Group untuk gigi (korona + akar)
+                const toothGroup = new THREE.Group();
+                toothGroup.position.set(position[0], position[1], position[2]);
+                toothGroup.toothId = id;
+
+                // KORONA (bagian atas putih)
+                const coronaGeometry = new THREE.BoxGeometry(0.45, 0.5, 0.4);
+                const coronaMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xfaf6f0,
+                    shininess: 120,
                     side: THREE.DoubleSide
                 });
-                
-                const tooth = new THREE.Mesh(geometry, material);
-                tooth.position.set(position[0], position[1], position[2]);
-                tooth.toothId = id;
-                
-                tooth.addEventListener = function(event, callback) {
-                    if (event === 'click') this.callback = callback;
-                };
-                
-                return tooth;
+                const corona = new THREE.Mesh(coronaGeometry, coronaMaterial);
+                corona.position.y = 0.15;
+                corona.castShadow = true;
+                corona.receiveShadow = true;
+                toothGroup.add(corona);
+
+                // AKAR (bagian bawah kuning)
+                const rootGeometry = new THREE.ConeGeometry(0.25, 0.6, 32);
+                const rootMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xf4d9b8,
+                    shininess: 60,
+                    side: THREE.DoubleSide
+                });
+                const root = new THREE.Mesh(rootGeometry, rootMaterial);
+                root.position.y = -0.35;
+                root.castShadow = true;
+                root.receiveShadow = true;
+                toothGroup.add(root);
+
+                // GARIS VERTIKAL GIGI (groove)
+                const grooveGeometry = new THREE.BoxGeometry(0.02, 0.5, 0.4);
+                const grooveMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xe8d4ba,
+                    shininess: 40
+                });
+                const groove = new THREE.Mesh(grooveGeometry, grooveMaterial);
+                groove.position.y = 0.15;
+                groove.position.z = 0.21;
+                toothGroup.add(groove);
+
+                // HIGHLIGHT (shine effect)
+                const highlightGeometry = new THREE.BoxGeometry(0.1, 0.3, 0.05);
+                const highlightMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffffff,
+                    shininess: 200,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                const highlight = new THREE.Mesh(highlightGeometry, highlightMaterial);
+                highlight.position.set(-0.12, 0.25, 0.22);
+                toothGroup.add(highlight);
+
+                // OUTLINE BORDER
+                const edges = new THREE.EdgesGeometry(coronaGeometry);
+                const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xcccccc, linewidth: 1 }));
+                line.position.copy(corona.position);
+                toothGroup.add(line);
+
+                return toothGroup;
             }
 
             setupControls() {
