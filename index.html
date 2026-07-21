@@ -1,283 +1,318 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>💰</text></svg>">
-    <style>
-        body {
-            font-family: Arial;
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
-            color: #e0e0e0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        h1 { color: #2a9d8f; text-align: center; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #a0a0a0; margin-bottom: 20px; }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: rgba(42, 157, 143, 0.1);
-            border: 2px solid #2a9d8f;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .stat-label { color: #a0a0a0; font-size: 0.85em; margin-bottom: 5px; }
-        .stat-value { font-size: 1.5em; color: #2a9d8f; font-weight: bold; }
-        
-        .form {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(42, 157, 143, 0.2);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #2a9d8f;
-            background: rgba(255,255,255,0.05);
-            color: #e0e0e0;
-            font-family: inherit;
-            border-radius: 4px;
-        }
-        
-        button {
-            background: #2a9d8f;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 5px;
-            font-weight: bold;
-        }
-        
-        button:hover { background: #1d7a78; }
-        
-        .btn-full { width: 100%; margin: 10px 0; }
-        .btn-del { background: #ff6b6b; padding: 6px 12px; }
-        
-        .expense {
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid #2a9d8f;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .expense-info { flex: 1; }
-        .expense-cat { background: rgba(42, 157, 143, 0.2); color: #2a9d8f; padding: 3px 8px; border-radius: 3px; font-size: 0.8em; display: inline-block; margin-bottom: 3px; }
-        .expense-desc { color: #e0e0e0; font-weight: 600; }
-        .expense-time { color: #707070; font-size: 0.8em; margin-top: 3px; }
-        
-        .expense-amount { color: #2a9d8f; font-weight: bold; margin: 0 15px; }
-        
-        .empty { text-align: center; color: #707070; padding: 30px; }
-        
-        .monthly-detail {
-            background: rgba(42, 157, 143, 0.1);
-            border: 1px solid #2a9d8f;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-        }
-        
-        .monthly-title { color: #2a9d8f; font-weight: bold; margin-bottom: 10px; }
-        
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(42, 157, 143, 0.2);
-            color: #e0e0e0;
-        }
-        
-        .category-row:last-child { border-bottom: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>💰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body {
+font-family: 'Poppins', Arial, sans-serif;
+background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+background-attachment: fixed;
+color: #e8e8f0;
+padding: 30px 20px;
+min-height: 100vh;
+margin: 0;
+}
+.container {
+max-width: 600px;
+margin: 0 auto;
+}
+h1 {
+color: #fff;
+text-align: center;
+margin-bottom: 6px;
+font-size: 2em;
+font-weight: 700;
+text-shadow: 0 2px 12px rgba(139, 92, 246, 0.55);
+}
+.subtitle { text-align: center; color: #b3aed6; margin-bottom: 25px; font-size: 0.95em; }
+
+.stats-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+margin-bottom: 25px;
+}
+
+.stat-card {
+background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(236, 72, 153, 0.12));
+border: 1px solid rgba(139, 92, 246, 0.35);
+border-radius: 16px;
+padding: 20px;
+text-align: center;
+backdrop-filter: blur(10px);
+box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+transition: transform 0.2s ease;
+}
+.stat-card:hover { transform: translateY(-3px); }
+
+.stat-label { color: #b3aed6; font-size: 0.85em; margin-bottom: 6px; letter-spacing: 0.3px; }
+.stat-value { font-size: 1.6em; background: linear-gradient(90deg, #a78bfa, #f472b6); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
+
+.form {
+background: rgba(255,255,255,0.05);
+border: 1px solid rgba(139, 92, 246, 0.25);
+padding: 25px;
+border-radius: 16px;
+margin: 25px 0;
+box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+label { font-size: 0.9em; color: #cfc9e8; display: block; margin-top: 10px; }
+
+input, select, textarea {
+width: 100%;
+padding: 12px;
+margin: 8px 0;
+border: 1px solid rgba(139, 92, 246, 0.4);
+background: rgba(255,255,255,0.06);
+color: #e8e8f0;
+font-family: inherit;
+border-radius: 8px;
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+outline: none;
+border-color: #a78bfa;
+box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+textarea { resize: vertical; min-height: 50px; }
+
+button {
+background: linear-gradient(90deg, #8b5cf6, #ec4899);
+color: white;
+border: none;
+padding: 13px 20px;
+border-radius: 10px;
+cursor: pointer;
+margin: 5px 0;
+font-weight: 600;
+font-family: inherit;
+letter-spacing: 0.3px;
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4); }
+button:active { transform: translateY(0); }
+
+.btn-full { width: 100%; margin: 12px 0 4px; }
+.btn-del { background: linear-gradient(90deg, #ef4444, #f87171); padding: 7px 14px; font-size: 0.85em; }
+
+.expense {
+background: rgba(255,255,255,0.04);
+border-left: 3px solid #a78bfa;
+padding: 14px;
+margin: 10px 0;
+border-radius: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: background 0.2s ease;
+}
+.expense:hover { background: rgba(255,255,255,0.07); }
+
+.expense-info { flex: 1; }
+.expense-cat { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; padding: 3px 10px; border-radius: 20px; font-size: 0.78em; display: inline-block; margin-bottom: 4px; }
+.expense-desc { color: #e8e8f0; font-weight: 600; }
+.expense-time { color: #8b87a8; font-size: 0.8em; margin-top: 3px; }
+
+.expense-amount { color: #f472b6; font-weight: 700; margin: 0 15px; }
+
+.empty { text-align: center; color: #8b87a8; padding: 35px 20px; }
+
+.monthly-detail {
+background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.08));
+border: 1px solid rgba(139, 92, 246, 0.3);
+border-radius: 16px;
+padding: 20px;
+margin: 25px 0;
+box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.monthly-title { color: #e8e8f0; font-weight: 700; margin-bottom: 12px; }
+
+.category-row {
+display: flex;
+justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+color: #e0e0e0;
+}
+
+.category-row:last-child { border-bottom: none; }
+
+.section-label { color: #b3aed6; font-size: 0.9em; margin: 20px 0 10px; font-weight: 600; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>💰 Expense Tracker</h1><p class="subtitle">Catat pengeluaran harian & bulanan</p>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Total Hari Ini</div>
-                <div class="stat-value" id="dayTotal">Rp 0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Bulan Ini</div>
-                <div class="stat-value" id="monthTotal">Rp 0</div>
-            </div>
-        </div>
-        
-        <div class="form">
-            <label>Kategori</label>
-            <select id="cat">
-                <option>🍔 Makanan</option>
-                <option>🚗 Transport</option>
-                <option>🎬 Hiburan</option>
-                <option>🛍️ Belanja</option>
-                <option>⚕️ Kesehatan</option>
-                <option>📌 Lainnya</option>
-            </select>
-            
-            <label>Jumlah (Rp)</label>
-            <input type="number" id="amt" placeholder="Contoh: 50000" min="0">
-            
-            <label>Deskripsi</label>
-            <textarea id="desc" placeholder="Contoh: Makan siang"></textarea>
-            
-            <button class="btn-full" onclick="add()">+ Tambah Pengeluaran</button>
-        </div>
-        
-        <div class="monthly-detail">
-            <div class="monthly-title">📊 Breakdown Bulan Ini</div>
-            <div id="monthlyBreakdown"></div>
-        </div>
-        
-        <div>
-            <div style="color: #a0a0a0; font-size: 0.9em; margin: 15px 0;">📝 Pengeluaran Hari Ini</div>
-            <div id="list"></div>
-        </div>
-    </div>
+<div class="container">
+<h1>💰 Expense Tracker</h1><p class="subtitle">Catat pengeluaran harian & bulanan</p>
 
-    <script>
-        let expenses = {};
-        let currDate = new Date().toDateString();
-        
-        function getMonthKey() {
-            let d = new Date();
-            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-        }
-        
-        function getDayKey() {
-            return currDate;
-        }
-        
-        function formatRupiah(n) {
-            return 'Rp ' + n.toLocaleString('id-ID');
-        }
-        
-        function loadDay() {
-            let key = 'exp_' + getDayKey();
-            expenses[getDayKey()] = JSON.parse(localStorage.getItem(key) || '[]');
-        }
-        
-        function saveDay() {
-            let key = 'exp_' + getDayKey();
-            localStorage.setItem(key, JSON.stringify(expenses[getDayKey()] || []));
-        }
-        
-        function getMonthExpenses() {
-            let month = getMonthKey();
-            let total = 0;
-            let byCategory = {};
-            
-            for (let key in localStorage) {
-                if (key.startsWith('exp_')) {
-                    let dateStr = key.replace('exp_', '');
-                    let date = new Date(dateStr);
-                    let dateMonth = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
-                    
-                    if (dateMonth === month) {
-                        let items = JSON.parse(localStorage.getItem(key) || '[]');
-                        items.forEach(item => {
-                            total += item.amt;
-                            let cat = item.cat;
-                            byCategory[cat] = (byCategory[cat] || 0) + item.amt;
-                        });
-                    }
-                }
-            }
-            
-            return { total, byCategory };
-        }
-        
-        function add() {
-            let cat = document.getElementById('cat').value;
-            let amt = parseInt(document.getElementById('amt').value) || 0;
-            let desc = document.getElementById('desc').value || 'Tanpa deskripsi';
-            
-            if (amt <= 0) { alert('Masukkan jumlah yang valid'); return; }
-            
-            loadDay();
-            if (!expenses[getDayKey()]) expenses[getDayKey()] = [];expenses[getDayKey()].push({
-                cat: cat,
-                amt: amt,
-                desc: desc,
-                id: Date.now(),
-                time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})
-            });
-            
-            saveDay();
-            document.getElementById('amt').value = '';
-            document.getElementById('desc').value = '';
-            render();
-        }
-        
-        function del(id) {
-            loadDay();
-            expenses[getDayKey()] = expenses[getDayKey()].filter(x => x.id !== id);
-            saveDay();
-            render();
-        }
-        
-        function render() {
-            loadDay();
-            
-            // Day total
-            let dayTotal = (expenses[getDayKey()] || []).reduce((s, x) => s + x.amt, 0);
-            document.getElementById('dayTotal').textContent = formatRupiah(dayTotal);
-            
-            // Month stats
-            let month = getMonthExpenses();
-            document.getElementById('monthTotal').textContent = formatRupiah(month.total);
-            
-            // Monthly breakdown
-            let breakdown = '';
-            for (let cat in month.byCategory) {
-                breakdown += `<div class="category-row"><span>${cat}</span><span style="color: #2a9d8f; font-weight: bold;">${formatRupiah(month.byCategory[cat])}</span></div>`;
-            }
-            if (breakdown === '') breakdown = '<div class="category-row"><span style="color: #707070;">Belum ada pengeluaran bulan ini</span></div>';
-            document.getElementById('monthlyBreakdown').innerHTML = breakdown;
-            
-            // Day list
-            let list = '';
-            (expenses[getDayKey()] || []).forEach(x => {
-                list += `<div class="expense">
-                    <div class="expense-info">
-                        <div class="expense-cat">${x.cat}</div>
-                        <div class="expense-desc">${x.desc}</div>
-                        <div class="expense-time">${x.time}</div>
-                    </div>
-                    <div class="expense-amount">${formatRupiah(x.amt)}</div>
-                    <button class="btn-del" onclick="del(${x.id})">Hapus</button>
-                </div>`;
-            });
-            
-            if (list === '') list = '<div class="empty">Belum ada pengeluaran hari ini</div>';
-            document.getElementById('list').innerHTML = list;
-        }
-        
-        render();
-    </script>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Total Hari Ini</div>
+<div class="stat-value" id="dayTotal">Rp 0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Total Bulan Ini</div>
+<div class="stat-value" id="monthTotal">Rp 0</div>
+</div>
+</div>
+
+<div class="form">
+<label>Kategori</label>
+<select id="cat">
+<option>🍔 Makanan</option>
+<option>🚗 Transport</option>
+<option>🎬 Hiburan</option>
+<option>🛍️ Belanja</option>
+<option>⚕️ Kesehatan</option>
+<option>📌 Lainnya</option>
+</select>
+
+<label>Jumlah (Rp)</label>
+<input type="number" id="amt" placeholder="Contoh: 50000" min="0">
+
+<label>Deskripsi</label>
+<textarea id="desc" placeholder="Contoh: Makan siang"></textarea>
+
+<button class="btn-full" onclick="add()">+ Tambah Pengeluaran</button>
+</div>
+
+<div class="monthly-detail">
+<div class="monthly-title">📊 Breakdown Bulan Ini</div>
+<div id="monthlyBreakdown"></div>
+</div>
+
+<div>
+<div class="section-label">📝 Pengeluaran Hari Ini</div>
+<div id="list"></div>
+</div>
+</div>
+
+<script>
+let expenses = {};
+let currDate = new Date().toDateString();
+
+function getMonthKey() {
+let d = new Date();
+return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function getDayKey() {
+return currDate;
+}
+
+function formatRupiah(n) {
+return 'Rp ' + n.toLocaleString('id-ID');
+}
+
+function loadDay() {
+let key = 'exp_' + getDayKey();
+expenses[getDayKey()] = JSON.parse(localStorage.getItem(key) || '[]');
+}
+
+function saveDay() {
+let key = 'exp_' + getDayKey();
+localStorage.setItem(key, JSON.stringify(expenses[getDayKey()] || []));
+}
+
+function getMonthExpenses() {
+let month = getMonthKey();
+let total = 0;
+let byCategory = {};
+
+for (let key in localStorage) {
+if (key.startsWith('exp_')) {
+let dateStr = key.replace('exp_', '');
+let date = new Date(dateStr);
+let dateMonth = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+
+if (dateMonth === month) {
+let items = JSON.parse(localStorage.getItem(key) || '[]');
+items.forEach(item => {
+total += item.amt;
+let cat = item.cat;
+byCategory[cat] = (byCategory[cat] || 0) + item.amt;
+});
+}
+}
+}
+
+return { total, byCategory };
+}
+
+function add() {
+let cat = document.getElementById('cat').value;
+let amt = parseInt(document.getElementById('amt').value) || 0;
+let desc = document.getElementById('desc').value || 'Tanpa deskripsi';
+
+if (amt <= 0) { alert('Masukkan jumlah yang valid'); return; }
+
+loadDay();
+if (!expenses[getDayKey()]) expenses[getDayKey()] = [];expenses[getDayKey()].push({
+cat: cat,
+amt: amt,
+desc: desc,
+id: Date.now(),
+time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})
+});
+
+saveDay();
+document.getElementById('amt').value = '';
+document.getElementById('desc').value = '';
+render();
+}
+
+function del(id) {
+loadDay();
+expenses[getDayKey()] = expenses[getDayKey()].filter(x => x.id !== id);
+saveDay();
+render();
+}
+
+function render() {
+loadDay();
+
+let dayTotal = (expenses[getDayKey()] || []).reduce((s, x) => s + x.amt, 0);
+document.getElementById('dayTotal').textContent = formatRupiah(dayTotal);
+
+let month = getMonthExpenses();
+document.getElementById('monthTotal').textContent = formatRupiah(month.total);
+
+let breakdown = '';
+for (let cat in month.byCategory) {
+breakdown += `<div class="category-row"><span>${cat}</span><span style="color: #f472b6; font-weight: bold;">${formatRupiah(month.byCategory[cat])}</span></div>`;
+}
+if (breakdown === '') breakdown = '<div class="category-row"><span style="color: #8b87a8;">Belum ada pengeluaran bulan ini</span></div>';
+document.getElementById('monthlyBreakdown').innerHTML = breakdown;
+
+let list = '';
+(expenses[getDayKey()] || []).forEach(x => {
+list += `<div class="expense">
+<div class="expense-info">
+<div class="expense-cat">${x.cat}</div>
+<div class="expense-desc">${x.desc}</div>
+<div class="expense-time">${x.time}</div>
+</div>
+<div class="expense-amount">${formatRupiah(x.amt)}</div>
+<button class="btn-del" onclick="del(${x.id})">Hapus</button>
+</div>`;
+});
+
+if (list === '') list = '<div class="empty">Belum ada pengeluaran hari ini</div>';
+document.getElementById('list').innerHTML = list;
+}
+
+render();
+</script>
 </body>
 </html>
